@@ -20,12 +20,44 @@ namespace Filesing.Cli
                 bool showHelp = false;
                 bool showVersion = false;
                 bool showLicense = false;
+                string inFile = string.Empty;
+                int numThreads = 1;
 
                 OptionSet options = new OptionSet
                 {
-                    { "h|help", "Shows this message and exits.", h => showHelp = ( h != null ) },
-                    { "version", "Shows the version and exits.", v => showVersion = ( v != null ) },
-                    { "license", "Shows the license information and exits.", l => showLicense = ( l != null ) }
+                    {
+                        "h|help",
+                        "Shows this message and exits.",
+                        h => showHelp = ( h != null )
+                    },
+                    { 
+                        "version",
+                        "Shows the version and exits.",
+                        v => showVersion = ( v != null )
+                    },
+                    {
+                        "license",
+                        "Shows the license information and exits.",
+                        l => showLicense = ( l != null )
+                    },
+                    {
+                        "f|file=",
+                        "The input file to determine which patterns to search for.  Required.",
+                        f => inFile = f
+                    },
+                    {
+                        "j|numthreads=",
+                        "The number of threads to use.  0 for the processor count. Defaulted to 1.",
+                        j => 
+                        {
+                            if ( int.TryParse( j, out numThreads ) == false )
+                            {
+                                throw new ArgumentException(
+                                    "Number of threads must be an integer, got: '" + j + "'"
+                                );
+                            }
+                        }
+                    }
                 };
 
                 options.Parse( args );
