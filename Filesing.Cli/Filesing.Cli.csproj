@@ -5,4 +5,25 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="mono.options" Version="5.3.0.1" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <PackageId>Filesing</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Seth Hendrick</Authors>
+    <Company />
+    <PackageLicenseUrl>https://github.com/xforever1313/Filesing/blob/master/LICENSE_1_0.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/xforever1313/Filesing/</PackageProjectUrl>
+    <PackageTags>search find locate cli seth hendrick xforever1313 dotnet core linux windows</PackageTags>
+    <Copyright>Copyright © Seth Hendrick 2018</Copyright>
+    <RepositoryUrl>https://github.com/xforever1313/Filesing.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>TODO</Description>
+    <PackageReleaseNotes>View release notes here: [https://github.com/xforever1313/Filesing/releases](https://github.com/xforever1313/Filesing/releases)</PackageReleaseNotes>
+  </PropertyGroup>
+
 </Project>
