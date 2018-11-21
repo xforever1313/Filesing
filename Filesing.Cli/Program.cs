@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Filesing.Console
+namespace Filesing.Cli
 {
     class Program
     {

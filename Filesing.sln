@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesing.Api", "Filesing.Api\Filesing.Api.csproj", "{E4956C98-AE08-464B-ACFF-BE47E9C7B65A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesing.Console", "Filesing.Console\Filesing.Console.csproj", "{663A3754-1C93-4CBD-961A-6AEC6DFA9055}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesing.Cli", "Filesing.Cli\Filesing.Cli.csproj", "{663A3754-1C93-4CBD-961A-6AEC6DFA9055}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
