@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesing.Api", "Filesing.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filesing.Cli", "Filesing.Cli\Filesing.Cli.csproj", "{663A3754-1C93-4CBD-961A-6AEC6DFA9055}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SethCS", "SethCS", "{19F49E16-1B5A-40AB-866D-D330D88402DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSethCS.Standard", "SethCS\SethCS\LibSethCS.Standard.csproj", "{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +48,20 @@ Global
 		{663A3754-1C93-4CBD-961A-6AEC6DFA9055}.Release|x64.Build.0 = Release|x64
 		{663A3754-1C93-4CBD-961A-6AEC6DFA9055}.Release|x86.ActiveCfg = Release|x86
 		{663A3754-1C93-4CBD-961A-6AEC6DFA9055}.Release|x86.Build.0 = Release|x86
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|x64.ActiveCfg = Debug|x64
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|x64.Build.0 = Debug|x64
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|x86.ActiveCfg = Debug|x86
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Debug|x86.Build.0 = Debug|x86
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|x64.ActiveCfg = Release|x64
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|x64.Build.0 = Release|x64
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|x86.ActiveCfg = Release|x86
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D3E5C94C-9C2D-43E2-B42E-E3528D765D02} = {19F49E16-1B5A-40AB-866D-D330D88402DB}
 	EndGlobalSection
 EndGlobal
