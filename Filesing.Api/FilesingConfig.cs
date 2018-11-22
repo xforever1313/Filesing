@@ -7,7 +7,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using SethCS.Exceptions;
 
 namespace Filesing.Api
 {
@@ -46,5 +49,41 @@ namespace Filesing.Api
         public IList<PatternConfig> PatternConfigs { get; private set; }
 
         // ---------------- Functions ----------------
+
+        public void Validate()
+        {
+            bool success = true;
+            StringBuilder errorString = new StringBuilder();
+
+            errorString.AppendLine( "Errors when validating " + nameof( FilesingConfig ) + ":" );
+
+            if( string.IsNullOrWhiteSpace( this.SearchDirectoryLocation ) )
+            {
+                success = false;
+                errorString.AppendLine( "\t- Search Directory must be specified, not be null, whitespace, or empty." );
+            }
+            else if( Directory.Exists( this.SearchDirectoryLocation ) == false )
+            {
+                success = false;
+                errorString.AppendLine( "\t- " + this.SearchDirectoryLocation + " does not exist!" );
+            }
+
+            if( this.NumberOfThreads < 0 )
+            {
+                success = false;
+                errorString.AppendLine( "\t- Number of threads can not be less than zero.  Got: " + this.NumberOfThreads );
+            }
+
+            if( this.PatternConfigs.Count == 0 )
+            {
+                success = false;
+                errorString.AppendLine( "\t- No Patterns were specified..." );
+            }
+
+            if( success == false )
+            {
+                throw new ValidationException( errorString.ToString() );
+            }
+        }
     }
 }
