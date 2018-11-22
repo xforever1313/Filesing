@@ -152,7 +152,7 @@ namespace Filesing.Api
         {
             try
             {
-                this.log.WriteLine( threadName + "> Started." );
+                this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Started." );
 
                 string file;
                 lock( this.filesToProcess )
@@ -166,7 +166,7 @@ namespace Filesing.Api
                     this.filesToProcess.RemoveAt( 0 );
                 }
 
-                this.log.WriteLine( threadName + "> Processing " + file );
+                this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Processing " + file );
             }
             catch( Exception err )
             {
@@ -176,7 +176,7 @@ namespace Filesing.Api
             }
             finally
             {
-                this.log.WriteLine( threadName + "> Exiting." );
+                this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Exiting." );
             }
         }
     }

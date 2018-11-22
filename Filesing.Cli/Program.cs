@@ -26,6 +26,7 @@ namespace Filesing.Cli
                 string inFile = string.Empty;
                 string searchDir = string.Empty;
                 int numThreads = 1;
+                int verbosity = 0;
 
                 OptionSet options = new OptionSet
                 {
@@ -66,6 +67,19 @@ namespace Filesing.Cli
                                 );
                             }
                         }
+                    },
+                    {
+                        "v|verbosity=",
+                        "How verbose the output should be.  Levels are 0, 1, and 2.  0 (the default) or less prints the least, 2 or more prints the most.",
+                        v =>
+                        {
+                            if ( int.TryParse(v, out verbosity ) == false)
+                            {
+                                throw new ArgumentException(
+                                    "Verbosity must be an integer, got: '" + v + "'"
+                                );
+                            }
+                        }
                     }
                 };
 
@@ -103,6 +117,7 @@ namespace Filesing.Cli
                     config.PatternConfigs.Add( patternConfig );
 
                     GenericLogger log = new GenericLogger();
+                    log.Verbosity = verbosity;
 
                     // Generic Logger's WriteLine adds a new line.  So,
                     // For Console, only call Write, as if we call WriteLine,

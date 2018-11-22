@@ -47,7 +47,7 @@ namespace Filesing.Api
 
         private void SearchDir( string baseDir, IList<string> files, FilesingConfig config )
         {
-            this.log.WriteLine( "Searching '{0}'", baseDir );
+            this.log.WriteLine( FilesingConstants.HeavyVerbosity, "Searching '{0}'", baseDir );
 
             foreach( string file in Directory.GetFiles( baseDir ) )
             {
@@ -61,6 +61,7 @@ namespace Filesing.Api
                     {
                         add = false;
                         this.log.WriteLine(
+                            FilesingConstants.HeavyVerbosity,
                             "\tIgnore '{0}', matched extension '{1}'",
                             fileName,
                             extensionRegex.ToString()
@@ -71,7 +72,7 @@ namespace Filesing.Api
 
                 if( add )
                 {
-                    this.log.WriteLine( "\tAdding file '{0}'", fileName );
+                    this.log.WriteLine( FilesingConstants.HeavyVerbosity, "\tAdding file '{0}'", fileName );
                     files.Add( fileName );
                 }
             }
