@@ -21,6 +21,7 @@ namespace Filesing.Cli
                 bool showVersion = false;
                 bool showLicense = false;
                 string inFile = string.Empty;
+                string searchDir = string.Empty;
                 int numThreads = 1;
 
                 OptionSet options = new OptionSet
@@ -41,9 +42,14 @@ namespace Filesing.Cli
                         l => showLicense = ( l != null )
                     },
                     {
-                        "f|file=",
+                        "f|configfile=",
                         "The input file to determine which patterns to search for.  Required.",
                         f => inFile = f
+                    },
+                    {
+                        "d|searchdir=",
+                        "The directory to search for files that match the patterns.  Required.",
+                        d => searchDir = d
                     },
                     {
                         "j|numthreads=",
