@@ -7,7 +7,10 @@
 
 using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Filesing.Api;
 using Mono.Options;
+using SethCS.Basic;
 
 namespace Filesing.Cli
 {
@@ -31,7 +34,7 @@ namespace Filesing.Cli
                         "Shows this message and exits.",
                         h => showHelp = ( h != null )
                     },
-                    { 
+                    {
                         "version",
                         "Shows the version and exits.",
                         v => showVersion = ( v != null )
@@ -54,7 +57,7 @@ namespace Filesing.Cli
                     {
                         "j|numthreads=",
                         "The number of threads to use.  0 for the processor count. Defaulted to 1.",
-                        j => 
+                        j =>
                         {
                             if ( int.TryParse( j, out numThreads ) == false )
                             {
@@ -84,7 +87,35 @@ namespace Filesing.Cli
                 }
                 else
                 {
+                    FilesingConfig config = new FilesingConfig();
+                    config.NumberOfThreads = 2;
+                    config.SearchDirectoryLocation = searchDir;
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.exe", RegexOptions.IgnoreCase ) );
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.dll", RegexOptions.IgnoreCase ) );
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.pdb", RegexOptions.IgnoreCase ) );
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.db", RegexOptions.IgnoreCase ) );
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.dat", RegexOptions.IgnoreCase ) );
+                    config.ExtensionsToIgnore.Add( new Regex( @"\.pyc", RegexOptions.IgnoreCase ) );
 
+                    PatternConfig patternConfig = new PatternConfig(
+                        new Regex( "class", RegexOptions.IgnoreCase | RegexOptions.Compiled )
+                    );
+                    config.PatternConfigs.Add( patternConfig );
+
+                    GenericLogger log = new GenericLogger();
+
+                    // Generic Logger's WriteLine adds a new line.  So,
+                    // For Console, only call Write, as if we call WriteLine,
+                    // we'll get 2 new lines... one from GenericLogger, one from
+                    // Console.WriteLine.
+                    log.OnWriteLine += Console.Write;
+                    log.OnErrorWriteLine += Console.Error.Write;
+
+                    using( FilesingRunner runner = new FilesingRunner( config, log ) )
+                    {
+                        runner.Start();
+                        runner.Join();
+                    }
                 }
             }
             catch( OptionException e )
@@ -103,7 +134,7 @@ namespace Filesing.Cli
 
         private static void ShowLicense()
         {
-            const string license = 
+            const string license =
 @"Filesing - Copyright Seth Hendrick 2018.
 
 Boost Software License - Version 1.0 - August 17th, 2003
@@ -130,7 +161,7 @@ FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ";
-            Console.WriteLine(license);
+            Console.WriteLine( license );
         }
 
         private static void ShowVersion()

@@ -26,6 +26,7 @@ namespace Filesing.Api
         public FilesingConfig()
         {
             this.PatternConfigs = new List<PatternConfig>();
+            this.ExtensionsToIgnore = new List<Regex>();
             this.NumberOfThreads = 1;
         }
 
@@ -42,6 +43,16 @@ namespace Filesing.Api
         /// Set to 0 to user the number of cores on the PC.
         /// </summary>
         public int NumberOfThreads { get; set; }
+
+        /// <summary>
+        /// File extensions to ignore.
+        /// For instance, if '.exe' is added to this list, EVERY file
+        /// that ends in '.exe.' will not be checked.
+        /// </summary>
+        /// <remarks>
+        /// The '.' MUST be included before the extension.
+        /// </remarks>
+        public IList<Regex> ExtensionsToIgnore { get; private set; }
 
         /// <summary>
         /// Patterns to search for.

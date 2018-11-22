@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
+using SethCS.Basic;
 
 namespace Filesing.Api
 {
@@ -20,10 +21,6 @@ namespace Filesing.Api
     {
         // ---------------- Fields ----------------
 
-        public event Action<string> OnStatus;
-
-        public event Action<string> OnError;
-
         private bool keepRunning;
         private object keepRunningObject;
         private bool started;
@@ -32,11 +29,15 @@ namespace Filesing.Api
 
         private FilesingConfig config;
 
+        private IList<string> filesToProcess;
+
+        private GenericLogger log;
+
         // ---------------- Constructor -----------------
 
-        public FilesingRunner( FilesingConfig config )
+        public FilesingRunner( FilesingConfig config, GenericLogger log )
         {
-            if ( config == null )
+            if( config == null )
             {
                 throw new ArgumentNullException( nameof( config ) );
             }
@@ -46,7 +47,7 @@ namespace Filesing.Api
             this.started = false;
             this.keepRunningObject = new object();
 
-            for ( int i = 0; i < config.NumberOfThreads; ++i )
+            for( int i = 0; i < config.NumberOfThreads; ++i )
             {
                 string threadName = i.ToString();
                 Thread thread = new Thread( () => this.ThreadEntry( threadName ) );
@@ -54,6 +55,7 @@ namespace Filesing.Api
             }
 
             this.config = config;
+            this.log = log;
         }
 
         ~FilesingRunner()
@@ -97,6 +99,9 @@ namespace Filesing.Api
             {
                 throw new InvalidOperationException( "Operation already started" );
             }
+
+            FileCollector collector = new FileCollector( this.log );
+            this.filesToProcess = collector.FindAllFiles( this.config );
 
             this.started = true;
             this.IsRunning = true;
@@ -147,17 +152,31 @@ namespace Filesing.Api
         {
             try
             {
-                this.OnStatus?.Invoke( threadName + "> Started." );
+                this.log.WriteLine( threadName + "> Started." );
+
+                string file;
+                lock( this.filesToProcess )
+                {
+                    if( filesToProcess.Count == 0 )
+                    {
+                        return;
+                    }
+
+                    file = this.filesToProcess[0];
+                    this.filesToProcess.RemoveAt( 0 );
+                }
+
+                this.log.WriteLine( threadName + "> Processing " + file );
             }
             catch( Exception err )
             {
-                this.OnError?.Invoke(
+                this.log.ErrorWriteLine(
                     threadName + " > FATAL ERROR, exiting: " + Environment.NewLine + err.Message
                 );
             }
             finally
             {
-                this.OnStatus?.Invoke( threadName + "> Exiting." );
+                this.log.WriteLine( threadName + "> Exiting." );
             }
         }
     }
