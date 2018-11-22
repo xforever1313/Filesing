@@ -31,6 +31,8 @@ namespace Filesing.Api
 
         private IList<string> filesToProcess;
 
+        private List<MatchResult> results;
+
         private GenericLogger log;
 
         // ---------------- Constructor -----------------
@@ -52,6 +54,7 @@ namespace Filesing.Api
                 string threadName = i.ToString();
                 Thread thread = new Thread( () => this.ThreadEntry( threadName ) );
                 thread.Name = threadName;
+                this.threads.Add( thread );
             }
 
             this.config = config;
@@ -102,6 +105,7 @@ namespace Filesing.Api
 
             FileCollector collector = new FileCollector( this.log );
             this.filesToProcess = collector.FindAllFiles( this.config );
+            this.results = new List<MatchResult>();
 
             this.started = true;
             this.IsRunning = true;
@@ -111,12 +115,14 @@ namespace Filesing.Api
             }
         }
 
-        public void Join()
+        public IReadOnlyList<MatchResult> Join()
         {
             foreach( Thread thread in this.threads )
             {
                 thread.Join();
             }
+
+            return this.results.AsReadOnly();
         }
 
         public void Dispose()
@@ -154,19 +160,24 @@ namespace Filesing.Api
             {
                 this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Started." );
 
-                string file;
-                lock( this.filesToProcess )
+                while(true)
                 {
-                    if( filesToProcess.Count == 0 )
+                    string file;
+                    lock( this.filesToProcess )
                     {
-                        return;
+                        if( filesToProcess.Count == 0 )
+                        {
+                            return;
+                        }
+
+                        file = this.filesToProcess[0];
+                        this.filesToProcess.RemoveAt( 0 );
                     }
 
-                    file = this.filesToProcess[0];
-                    this.filesToProcess.RemoveAt( 0 );
-                }
+                    this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Processing " + file );
 
-                this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Processing " + file );
+                    FileProcessor.ProcessFile( file, this.config );
+                }
             }
             catch( Exception err )
             {
