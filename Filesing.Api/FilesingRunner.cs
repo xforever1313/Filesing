@@ -22,18 +22,18 @@ namespace Filesing.Api
         // ---------------- Fields ----------------
 
         private bool keepRunning;
-        private object keepRunningObject;
+        private readonly object keepRunningObject;
         private bool started;
 
-        private List<Thread> threads;
+        private readonly List<Thread> threads;
 
-        private FilesingConfig config;
+        private readonly FilesingConfig config;
 
         private IList<string> filesToProcess;
 
         private List<MatchResult> results;
 
-        private GenericLogger log;
+        private readonly GenericLogger log;
 
         // ---------------- Constructor -----------------
 
@@ -163,7 +163,7 @@ namespace Filesing.Api
             {
                 this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Started." );
 
-                while(true)
+                while( true )
                 {
                     string file;
                     lock( this.filesToProcess )
