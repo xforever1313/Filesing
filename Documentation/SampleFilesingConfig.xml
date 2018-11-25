@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Sample Configuration for Filesing.
+
+Note: The filesing API will ignore casing for all xml element and attribute names,
+      they are camel case in this file to make it more readable.
+
+globalSettings:
+    - Settings that are applied to all patterns.  Individual patterns
+      can override these settings.
+      
+patterns:
+    - Patterns contain the Regex to search for.  This will search all of the file names, directory names,
+      and file contents for the given regex in all files and directories that are NOT ignored.
+    
+ignores:
+    - Can be applied to the global settings and a pattern.
+    - ignoreFile: Ignores a SPECIFIC file.
+    - ignoreDir: Ignores a SPECIFIC Directory.
+    - ignoreDirWithRegex: Ignores ANY directory that matches the specified regex.
+                         So if this is set to 'bin', then c:\me\bin and c:\me\you\bin are BOTH ignored.
+                         This can be flagged with an 'ignoreCase' attribute (defaulted to false).
+    - ignoreFileWithRegex: Ignores ANY file that matches the specified regex.
+                          So if this is set to '\.gitignore', then ./.gitignore and ./test/.gitignore are BOTH ignored.
+                          This can be flagged with an 'ignoreCase' attribute (defaulted to false).
+    - ignoreFileWithExtension: Ignores ANY file that ends with the given extension.  MUST start with '.'.
+                               If this is set to '.exe', then ./something.exe and ./somethingelse.exe will BOTH be ignored.
+                               This can be flagged with an 'ignoreCase' attribute (defaulted to false).
+
+requirements:
+    - Can be applied to the global settings and a pattern.
+    - requireFile: File will be processed, even if ignored.  An error will be thrown if the file does not exist.
+    - requireDir: Directory will be processed, even if ignored.    An error will be thrown if the directory does not exist.
+
+ignoreCase:
+    - This attribute can be applied to 'ignoreDirWithRegex', 'ignoreFileWithRegex', 'ignoreFileWithExtension', and 'regex' elements.
+      This is set to false by default with ignoreDirWithRegex and ignoreFileWithRegex, but defaulted to true
+      with regex.  If set to true, filesing will ignore letter casing when searching for matches
+      (this is the equivalent of enabling .NET's RegexOptions.IgnoreCase).
+
+Global vs Pattern ignores/requirements:
+    - Global ignores and requirements shall apply to ALL patterns unless a pattern overrides them.
+    - To ignore a global requirement in a pattern, add the file or directory to the pattern's 'ignore' tag
+      to ensure it does NOT get processed.
+    - To ensure the pattern gets applied to a specific file or directory, even if the file or directory is ignored
+      globally, add the file to the pattern's 'requirements' tag to ensure it DOES get processed.
+
+-->
+<filesingConfig>
+    <globalSettings>
+        <ignores>
+            <ignoreFile>./somewhere/.gitmodules</ignoreFile>
+            <ignoreDir>./somewhere/.git</ignoreDir>
+            <ignoreDirWithRegex ignoreCase="true">^bin$</ignoreDirWithRegex>
+            <ignoreFileWithRegex ignoreCase="false">\.gitignore</ignoreFileWithRegex>
+            <ignoreFileWithExtension ignoreCase="false">.exe</ignoreFileWithExtension>
+            <ignoreFileWithExtension>.dll</ignoreFileWithExtension>
+        </ignores>
+        <requirements>
+            <requireFile>./somewhereElse/.gitignore</requireFile>
+            <requireDir>./somewhere/bin</requireDir>
+        </requirements>
+    </globalSettings>
+    <patterns>
+        <pattern>
+            <regex ignoreCase="true">class</regex>
+            <ignores>
+                <ignoreFile>./somewhere/.gitmodules</ignoreFile>
+                <ignoreDir>./somewhere/.git</ignoreDir>
+                <ignoreDirWithRegex>bin</ignoreDirWithRegex>
+                <ignoreFileWithRegex>\.gitignore</ignoreFileWithRegex>
+            </ignores>
+            <requirements>
+                <requireFile>./somewhereElse/.gitignore</requireFile>
+                <requireDir>./somewhere/bin</requireDir>
+            </requirements>
+        </pattern>
+        <pattern>
+            <regex>hello</regex>
+        </pattern>
+    </patterns>
+</filesingConfig>
