@@ -43,6 +43,7 @@ namespace Filesing.Api
             {
                 throw new ArgumentNullException( nameof( config ) );
             }
+            config.Validate();
 
             this.threads = new List<Thread>( config.NumberOfThreads );
             this.keepRunning = false;
@@ -52,8 +53,10 @@ namespace Filesing.Api
             for( int i = 0; i < config.NumberOfThreads; ++i )
             {
                 string threadName = i.ToString();
-                Thread thread = new Thread( () => this.ThreadEntry( threadName ) );
-                thread.Name = threadName;
+                Thread thread = new Thread( () => this.ThreadEntry( threadName ) )
+                {
+                    Name = threadName
+                };
                 this.threads.Add( thread );
             }
 

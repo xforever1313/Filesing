@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Filesing.Api;
 using Mono.Options;
 using SethCS.Basic;
+using SethCS.IO;
 
 namespace Filesing.Cli
 {
@@ -18,6 +19,16 @@ namespace Filesing.Cli
     {
         static int Main( string[] args )
         {
+            GenericLogger log = new GenericLogger();
+
+            // Generic Logger's WriteLine adds a new line.  So,
+            // For Console, only call Write, as if we call WriteLine,
+            // we'll get 2 new lines... one from GenericLogger, one from
+            // Console.WriteLine.
+            log.OnWriteLine += Console.Write;
+            log.OnWarningWriteLine += Log_OnWarningWriteLine;
+            log.OnErrorWriteLine += Log_OnErrorWriteLine;
+
             try
             {
                 bool showHelp = false;
@@ -101,9 +112,11 @@ namespace Filesing.Cli
                 }
                 else
                 {
-                    FilesingConfig config = new FilesingConfig();
-                    config.NumberOfThreads = 2;
-                    config.SearchDirectoryLocation = searchDir;
+                    FilesingConfig config = new FilesingConfig
+                    {
+                        NumberOfThreads = 2,
+                        SearchDirectoryLocation = searchDir
+                    };
                     config.ExtensionsToIgnore.Add( new Regex( @"\.exe", RegexOptions.IgnoreCase ) );
                     config.ExtensionsToIgnore.Add( new Regex( @"\.dll", RegexOptions.IgnoreCase ) );
                     config.ExtensionsToIgnore.Add( new Regex( @"\.pdb", RegexOptions.IgnoreCase ) );
@@ -116,15 +129,7 @@ namespace Filesing.Cli
                     );
                     config.PatternConfigs.Add( patternConfig );
 
-                    GenericLogger log = new GenericLogger();
                     log.Verbosity = verbosity;
-
-                    // Generic Logger's WriteLine adds a new line.  So,
-                    // For Console, only call Write, as if we call WriteLine,
-                    // we'll get 2 new lines... one from GenericLogger, one from
-                    // Console.WriteLine.
-                    log.OnWriteLine += Console.Write;
-                    log.OnErrorWriteLine += Console.Error.Write;
 
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )
                     {
@@ -135,16 +140,32 @@ namespace Filesing.Cli
             }
             catch( OptionException e )
             {
-                Console.WriteLine( e.Message );
+                log.WriteLine( e.Message );
                 return -1;
             }
             catch( Exception e )
             {
-                Console.WriteLine( "FATAL ERROR: " + e.Message );
+                log.ErrorWriteLine( "FATAL ERROR: " + e.Message );
                 return -2;
             }
 
             return 0;
+        }
+
+        private static void Log_OnWarningWriteLine( string obj )
+        {
+            using( ConsoleColorResetter reset = new ConsoleColorResetter( ConsoleColor.Yellow, null ) )
+            {
+                Console.Write( obj );
+            }
+        }
+
+        private static void Log_OnErrorWriteLine( string obj )
+        {
+            using( ConsoleColorResetter reset = new ConsoleColorResetter( ConsoleColor.Red, null ) )
+            {
+                Console.Error.Write( obj );
+            }
         }
 
         private static void ShowLicense()

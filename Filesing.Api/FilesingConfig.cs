@@ -76,7 +76,7 @@ namespace Filesing.Api
             else if( Directory.Exists( this.SearchDirectoryLocation ) == false )
             {
                 success = false;
-                errorString.AppendLine( "\t- " + this.SearchDirectoryLocation + " does not exist!" );
+                errorString.AppendLine( "\t- Directory '" + this.SearchDirectoryLocation + "' does not exist!" );
             }
 
             if( this.NumberOfThreads < 0 )
