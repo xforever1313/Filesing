@@ -26,7 +26,7 @@ ignores:
                           This can be flagged with an 'ignoreCase' attribute (defaulted to false).
     - ignoreFileWithExtension: Ignores ANY file that ends with the given extension.  MUST start with '.'.
                                If this is set to '.exe', then ./something.exe and ./somethingelse.exe will BOTH be ignored.
-                               This can be flagged with an 'ignoreCase' attribute (defaulted to false).
+                               This will ALWAYS ignore casing.
 
 requirements:
     - Can be applied to the global settings and a pattern.
@@ -34,7 +34,7 @@ requirements:
     - requireDir: Directory will be processed, even if ignored.    An error will be thrown if the directory does not exist.
 
 ignoreCase:
-    - This attribute can be applied to 'ignoreDirWithRegex', 'ignoreFileWithRegex', 'ignoreFileWithExtension', and 'regex' elements.
+    - This attribute can be applied to 'ignoreDirWithRegex', 'ignoreFileWithRegex', and 'regex' elements.
       This is set to false by default with ignoreDirWithRegex and ignoreFileWithRegex, but defaulted to true
       with regex.  If set to true, filesing will ignore letter casing when searching for matches
       (this is the equivalent of enabling .NET's RegexOptions.IgnoreCase).
@@ -54,7 +54,7 @@ Global vs Pattern ignores/requirements:
             <ignoreDir>./somewhere/.git</ignoreDir>
             <ignoreDirWithRegex ignoreCase="true">^bin$</ignoreDirWithRegex>
             <ignoreFileWithRegex ignoreCase="false">\.gitignore</ignoreFileWithRegex>
-            <ignoreFileWithExtension ignoreCase="false">.exe</ignoreFileWithExtension>
+            <ignoreFileWithExtension>.exe</ignoreFileWithExtension>
             <ignoreFileWithExtension>.dll</ignoreFileWithExtension>
         </ignores>
         <requirements>
