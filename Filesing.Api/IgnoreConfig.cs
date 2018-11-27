@@ -24,7 +24,7 @@ namespace Filesing.Api
         private readonly HashSet<string> ignoredDirectories;
         private readonly List<Regex> ignoredFilesWithRegex;
         private readonly List<Regex> ignoredDirsWithRegex;
-        private readonly HashSet<string> ignoredFileExtensions;
+        private readonly List<Regex> ignoredFileExtensions;
 
         // ---------------- Constructor ----------------
 
@@ -39,7 +39,8 @@ namespace Filesing.Api
             this.ignoredDirsWithRegex = new List<Regex>();
             this.IgnoredDirectoriesWithRegex = this.ignoredDirsWithRegex.AsReadOnly();
 
-            this.ignoredFileExtensions = new HashSet<string>();
+            this.ignoredFileExtensions = new List<Regex>();
+            this.IgnoredFileExtensions = this.ignoredFileExtensions.AsReadOnly();
         }
 
         // ---------------- Properties ----------------
@@ -67,7 +68,7 @@ namespace Filesing.Api
         /// <summary>
         /// If a file's extension matches any of these regexes, it will be ignored.
         /// </summary>
-        public IReadOnlyCollection<string> IgnoredFileExtensions => this.ignoredFileExtensions;
+        public IReadOnlyList<Regex> IgnoredFileExtensions { get; private set; }
 
         // ---------------- Functions ----------------
 
@@ -95,12 +96,10 @@ namespace Filesing.Api
             this.ignoredDirsWithRegex.Add( dirRegex );
         }
 
-        public void AddIgnoredFileExtension( string extension )
+        public void AddIgnoredFileExtension( Regex extensionRegex )
         {
-            ArgumentChecker.StringIsNotNullOrEmpty( extension, nameof( extension ) );
-
-            // Path.GetExtension always returns lowercase.
-            this.ignoredFileExtensions.Add( extension.ToLower() );
+            ArgumentChecker.IsNotNull( extensionRegex, nameof( extensionRegex ) );
+            this.ignoredFileExtensions.Add( extensionRegex );
         }
 
 
@@ -146,10 +145,13 @@ namespace Filesing.Api
                     }
                 }
 
-                string extension = Path.GetExtension( path );
-                if( this.IgnoredFileExtensions.Contains( extension ) )
+                foreach( Regex extensionRegex in this.IgnoredFileExtensions )
                 {
-                    return true;
+                    string extension = Path.GetExtension( path );
+                    if( extensionRegex.IsMatch( extension ) )
+                    {
+                        return true;
+                    }
                 }
             }
             else

@@ -155,20 +155,19 @@ namespace Filesing.Tests
             {
                 TestDirManager.Dir1_HelloHtml,
                 TestDirManager.Dir2_MyDir_Myfile1Text,
-                TestDirManager.Dir2_MyDir_Myfile2Text,
                 TestDirManager.Dir3_HiddenHtml
             };
 
-            List<string> extensions = new List<string>
+            List<Regex> regexes = new List<Regex>
             {
-                ".html",
-                ".text"
+                new Regex( @"\.html", RegexOptions.IgnoreCase ),
+                new Regex( @"\.text" )
             };
 
             IgnoreConfig config = new IgnoreConfig();
-            foreach( string extension in extensions )
+            foreach( Regex regex in regexes )
             {
-                config.AddIgnoredFileExtension( extension );
+                config.AddIgnoredFileExtension( regex );
             }
 
             // No directores are ignored.

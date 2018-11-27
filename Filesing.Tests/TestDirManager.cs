@@ -161,7 +161,7 @@ namespace Filesing.Tests
         [File]
         public static string Dir2_MyDir_Myfile2Text => Path.Combine(
             Dir2_MyDir,
-            "myFile2.text"
+            "myFile2.TEXT"
         );
 
         // -------- Dir 3 --------
