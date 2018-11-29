@@ -5,6 +5,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,9 @@ namespace Filesing.Api
         private readonly List<Regex> ignoredFilesWithRegex;
         private readonly List<Regex> ignoredDirsWithRegex;
         private readonly List<Regex> ignoredFileExtensions;
+
+        private static readonly string dirSepString =
+            Regex.Escape( "" + Path.DirectorySeparatorChar + Path.AltDirectorySeparatorChar );
 
         // ---------------- Constructor ----------------
 
@@ -90,10 +94,38 @@ namespace Filesing.Api
             this.ignoredFilesWithRegex.Add( fileRegex );
         }
 
-        public void AddDirRegexToIgnore( Regex dirRegex )
+        /// <summary>
+        /// Adds a name of a directory to ignore.  This shall include
+        /// the directory and any sub-directories.
+        /// </summary>
+        /// <example>
+        /// This is the equivalent of putting a directory name in a .gitignore.
+        /// In a .gitignore with C# projects, you usually want to ignore all bin directories,
+        /// so you put 'bin' in the .gitignore.  If you want to do the same here,
+        /// pass in 'bin'.
+        /// </example>
+        /// <param name="dirRegex">
+        /// Regex to search for.
+        /// </param>
+        public void AddDirNameToIgnore( string dirRegex, bool ignoreCase = false )
         {
             ArgumentChecker.IsNotNull( dirRegex, nameof( dirRegex ) );
-            this.ignoredDirsWithRegex.Add( dirRegex );
+
+            RegexOptions options = ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None;
+            options |= RegexOptions.Compiled;
+
+            string regex = string.Format(
+                "[{0}](({1}[{0}])|({1}$))",
+                dirSepString,
+                dirRegex
+            );
+
+            this.ignoredDirsWithRegex.Add(
+                new Regex(
+                    regex,
+                    options
+                )
+            );
         }
 
         public void AddIgnoredFileExtension( Regex extensionRegex )
@@ -115,19 +147,7 @@ namespace Filesing.Api
             // First are we a diretory or a file?
             if( Directory.Exists( path ) )
             {
-                if( this.IgnoredDirectories.Contains( path ) )
-                {
-                    return true;
-                }
-
-                foreach( Regex ignoredDir in this.IgnoredDirectoriesWithRegex )
-                {
-                    string dirName = Path.GetFileName( path );
-                    if( ignoredDir.IsMatch( dirName ) )
-                    {
-                        return true;
-                    }
-                }
+                return this.CheckDir( path );
             }
             else if( File.Exists( path ) )
             {
@@ -153,11 +173,48 @@ namespace Filesing.Api
                         return true;
                     }
                 }
+
+                // Next check directory:
+                string dirPath = Path.GetDirectoryName( path );
+                return this.CheckDir( dirPath );
             }
             else
             {
                 // Not a file or directory, ignore it.
                 return true;
+            }
+        }
+
+        private bool CheckDir( string path )
+        {
+            if( this.IgnoredDirectories.Contains( path ) )
+            {
+                return true;
+            }
+
+            // If an ignored directory is c:\users\me,
+            // but a directory checking is c:\users\me\Documents,
+            // we need to make sure c:\users\me\Documents gets ignored.
+            foreach( string ignoredDir in this.IgnoredDirectories )
+            {
+                string regex = string.Format(
+                    "^{0}[{1}]",
+                    Regex.Escape( ignoredDir ),
+                    dirSepString
+                );
+
+                if( Regex.IsMatch( path, regex ) )
+                {
+                    return true;
+                }
+            }
+
+            foreach( Regex ignoredDir in this.IgnoredDirectoriesWithRegex )
+            {
+                if( ignoredDir.IsMatch( path ) )
+                {
+                    return true;
+                }
             }
 
             return false;
