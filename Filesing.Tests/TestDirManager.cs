@@ -81,7 +81,7 @@ namespace Filesing.Tests
         [File]
         public static string RootFile2 => Path.Combine(
             TestDir,
-            "RootFile1.txt"
+            "RootFile2.txt"
         );
 
         // -------- Hidden Dir --------
@@ -181,7 +181,7 @@ namespace Filesing.Tests
         [File]
         public static string Dir3_HiddenHtml => Path.Combine(
             Dir3,
-            ".html"
+            ".HTML"
         );
     }
 
