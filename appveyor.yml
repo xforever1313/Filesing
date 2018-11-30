@@ -1,0 +1,55 @@
+# We only care about master for now.
+branches:
+    only:
+        - master
+
+# Do not build tags
+skip_tags: true
+
+#--------------------#
+# Environment Config #
+#--------------------#
+
+image: Visual Studio 2017
+
+matrix:
+    fast_finish: true # Fail right away if something goes wrong.
+
+#--------------#
+# Build Config #
+#--------------#
+
+platform: Any CPU
+
+configuration: Release
+
+before_build:
+    - git submodule update --init SethCS
+    - dotnet restore Filesing.sln
+
+build:
+    parallel: true
+    project: Filesing.sln
+    publish_nuget: false
+   
+#-------------#
+# Test Config #
+#-------------#
+
+test:
+    assemblies:
+        - Filesing.Tests.dll
+
+notifications:
+    - provider: Email
+      to:
+          - seth@shendrick.net
+      subject: 'Filesing Build {{status}}'
+
+
+#-----------#
+# Artifacts #
+#-----------#
+
+#artifacts:
+#    - path: '*.nupkg'
