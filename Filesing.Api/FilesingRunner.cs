@@ -160,6 +160,8 @@ namespace Filesing.Api
         {
             try
             {
+                FileProcessor fileProcessor = new FileProcessor( this.config, this.log, threadName );
+
                 this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Started." );
 
                 while( true )
@@ -176,9 +178,7 @@ namespace Filesing.Api
                         this.filesToProcess.RemoveAt( 0 );
                     }
 
-                    this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Processing " + file );
-
-                    FileProcessor.ProcessFile( file, this.config );
+                    fileProcessor.ProcessFile( file );
                 }
             }
             catch( Exception err )

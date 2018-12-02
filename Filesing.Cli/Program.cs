@@ -117,6 +117,12 @@ namespace Filesing.Cli
                         NumberOfThreads = 2,
                         SearchDirectoryLocation = searchDir
                     };
+                    IgnoreConfig ignoreConfig = new IgnoreConfig();
+                    ignoreConfig.AddDirNameToIgnore( "bin" );
+                    ignoreConfig.AddDirNameToIgnore( "obj" );
+                    ignoreConfig.AddDirNameToIgnore( ".vs" );
+                    ignoreConfig.AddIgnoredFileExtension( new Regex( @"\.zip" ) );
+                    config.GlobalIgnoreConfigs.Add( ignoreConfig );
 
                     PatternConfig patternConfig = new PatternConfig(
                         new Regex( "class", RegexOptions.IgnoreCase | RegexOptions.Compiled )
