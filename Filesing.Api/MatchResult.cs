@@ -21,6 +21,10 @@ namespace Filesing.Api
 
         public string File { get; internal set; }
 
+        /// <summary>
+        /// The line number.  If this is set to 0, it means
+        /// it matched the file name itself.
+        /// </summary>
         public int LineNumber { get; internal set; }
 
         public string Line { get; internal set; }
@@ -31,14 +35,24 @@ namespace Filesing.Api
 
         public override string ToString()
         {
-            return
-                string.Format(
-                    "Matched '{0}' in '{1}' on line {2}: '{3}'",
+            if( this.LineNumber == 0 )
+            {
+                return string.Format(
+                    "Matched '{0}' in file path '{1}'.",
+                    this.Pattern,
+                    this.File
+                );
+            }
+            else
+            {
+                return string.Format(
+                    "Matched '{0}' in '{1}' on line {2}: '{3}'.",
                     this.Pattern,
                     this.File,
                     this.LineNumber,
                     this.Line
                 );
+            }
         }
     }
 }

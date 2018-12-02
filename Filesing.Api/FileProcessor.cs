@@ -65,6 +65,25 @@ namespace Filesing.Api
 
             this.Status( FilesingConstants.LightVerbosity, "Processing file: '" + filePath + "'" );
 
+            // Check filename first.
+            foreach( PatternConfig pattern in patternsToUse )
+            {
+                if( pattern.Pattern.IsMatch( filePath ) )
+                {
+                    MatchResult result = new MatchResult
+                    {
+                        File = filePath,
+                        Line = string.Empty,
+                        LineNumber = 0,
+                        Pattern = pattern.Pattern.ToString()
+                    };
+
+                    results.Add( result );
+
+                    this.Status( FilesingConstants.HeavyVerbosity, result.ToString() );
+                }
+            }
+
             using( StreamReader reader = new StreamReader( stream ) )
             {
                 string line = null;
