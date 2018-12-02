@@ -32,6 +32,8 @@ requirements:
     - Can be applied to the global settings and a pattern.
     - requireFile: File will be processed, even if ignored.  An error will be thrown if the file does not exist.
     - requireDir: Directory will be processed, even if ignored.    An error will be thrown if the directory does not exist.
+                  All subdirectories and files will be processed, even if the subdirectories are marked "ignore".  Requires
+                  always take precedence over ignores.
 
 ignoreCase:
     - This attribute can be applied to 'ignoreDirWithRegex', 'ignoreFileWithRegex', 'ignoreFileWithExtension', and 'regex' elements.
