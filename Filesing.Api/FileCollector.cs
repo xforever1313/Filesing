@@ -51,30 +51,8 @@ namespace Filesing.Api
 
             foreach( string file in Directory.GetFiles( baseDir ) )
             {
-                string extension = Path.GetExtension( file );
-                string fileName = Path.Combine( baseDir, file );
-
-                bool add = true;
-                foreach( Regex extensionRegex in config.ExtensionsToIgnore )
-                {
-                    if( extensionRegex.IsMatch( extension ) )
-                    {
-                        add = false;
-                        this.log.WriteLine(
-                            FilesingConstants.HeavyVerbosity,
-                            "\tIgnore '{0}', matched extension '{1}'",
-                            fileName,
-                            extensionRegex.ToString()
-                        );
-                        break;
-                    }
-                }
-
-                if( add )
-                {
-                    this.log.WriteLine( FilesingConstants.HeavyVerbosity, "\tAdding file '{0}'", fileName );
-                    files.Add( fileName );
-                }
+                string fileName = Path.Combine( baseDir, file ).NormalizePath();
+                files.Add( fileName );
             }
 
             foreach( string dir in Directory.GetDirectories( baseDir ) )

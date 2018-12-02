@@ -54,7 +54,7 @@ Global vs Pattern ignores/requirements:
         <ignores>
             <ignoreFile>./somewhere/.gitmodules</ignoreFile>
             <ignoreDir>./somewhere/.git</ignoreDir>
-            <ignoreDirWithRegex ignoreCase="true">^bin$</ignoreDirWithRegex>
+            <ignoreDirWithRegex ignoreCase="true">bin</ignoreDirWithRegex>
             <ignoreFileWithRegex ignoreCase="false">\.gitignore</ignoreFileWithRegex>
             <ignoreFileWithExtension ignoreCase="false">.exe</ignoreFileWithExtension>
             <ignoreFileWithExtension>.dll</ignoreFileWithExtension>
@@ -65,6 +65,8 @@ Global vs Pattern ignores/requirements:
         </requirements>
     </globalSettings>
     <patterns>
+        <!-- You can implicitly create a pattern from just a regex.  A pattern in this case has no ignores and no requirements. -->
+        <regex>public</regex>
         <pattern>
             <regex ignoreCase="true">class</regex>
             <ignores>

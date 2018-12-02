@@ -5,11 +5,9 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using SethCS.Exceptions;
 
 namespace Filesing.Api
@@ -26,7 +24,8 @@ namespace Filesing.Api
         public FilesingConfig()
         {
             this.PatternConfigs = new List<PatternConfig>();
-            this.ExtensionsToIgnore = new List<Regex>();
+            this.GlobalIgnoreConfigs = new List<IgnoreConfig>();
+            this.GlobalRequireConfigs = new List<RequireConfig>();
             this.NumberOfThreads = 1;
         }
 
@@ -45,14 +44,14 @@ namespace Filesing.Api
         public int NumberOfThreads { get; set; }
 
         /// <summary>
-        /// File extensions to ignore.
-        /// For instance, if '.exe' is added to this list, EVERY file
-        /// that ends in '.exe.' will not be checked.
-        /// </summary>
-        /// <remarks>
-        /// The '.' MUST be included before the extension.
+        /// Ignore configs that affects ALL patterns.
         /// </remarks>
-        public IList<Regex> ExtensionsToIgnore { get; private set; }
+        public IList<IgnoreConfig> GlobalIgnoreConfigs { get; private set; }
+
+        /// <summary>
+        /// Require configs that affects ALL patterns.
+        /// </summary>
+        public IList<RequireConfig> GlobalRequireConfigs { get; private set; }
 
         /// <summary>
         /// Patterns to search for.

@@ -117,12 +117,6 @@ namespace Filesing.Cli
                         NumberOfThreads = 2,
                         SearchDirectoryLocation = searchDir
                     };
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.exe", RegexOptions.IgnoreCase ) );
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.dll", RegexOptions.IgnoreCase ) );
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.pdb", RegexOptions.IgnoreCase ) );
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.db", RegexOptions.IgnoreCase ) );
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.dat", RegexOptions.IgnoreCase ) );
-                    config.ExtensionsToIgnore.Add( new Regex( @"\.pyc", RegexOptions.IgnoreCase ) );
 
                     PatternConfig patternConfig = new PatternConfig(
                         new Regex( "class", RegexOptions.IgnoreCase | RegexOptions.Compiled )

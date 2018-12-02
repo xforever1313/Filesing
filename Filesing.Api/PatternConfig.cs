@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SethCS.Exceptions;
 
 namespace Filesing.Api
 {
@@ -19,22 +20,28 @@ namespace Filesing.Api
     {
         // ---------------- Fields ----------------
 
-        private HashSet<string> filesToIgnore;
+        private readonly List<IgnoreConfig> ignoreConfigs;
+        private readonly List<RequireConfig> requireConfigs;
 
         // ---------------- Constructor -----------------
 
-        public PatternConfig( Regex regex, IEnumerable<string> filesToIgnore = null )
+        public PatternConfig( Regex regex ) :
+            this( regex, new List<IgnoreConfig>(), new List<RequireConfig>() )
         {
-            this.Pattern = regex;
-            this.filesToIgnore = new HashSet<string>();
+        }
 
-            if( filesToIgnore != null )
-            {
-                foreach( string file in filesToIgnore )
-                {
-                    this.filesToIgnore.Add( file );
-                }
-            }
+        public PatternConfig( Regex regex, IEnumerable<IgnoreConfig> ignoreConfigs, IEnumerable<RequireConfig> requireConfigs )
+        {
+            ArgumentChecker.IsNotNull( regex, nameof( regex ) );
+            ArgumentChecker.IsNotNull( ignoreConfigs, nameof( ignoreConfigs ) );
+            ArgumentChecker.IsNotNull( requireConfigs, nameof( requireConfigs ) );
+
+            this.Pattern = regex;
+            this.ignoreConfigs = new List<IgnoreConfig>( ignoreConfigs );
+            this.IgnoreConfigs = this.ignoreConfigs.AsReadOnly();
+
+            this.requireConfigs = new List<RequireConfig>( requireConfigs );
+            this.RequireConfigs = this.requireConfigs.AsReadOnly();
         }
 
         // ---------------- Properties ----------------
@@ -45,14 +52,13 @@ namespace Filesing.Api
         public Regex Pattern { get; private set; }
 
         /// <summary>
-        /// What files to ignore this pattern with.
+        /// The ignore config for this pattern.
         /// </summary>
-        public IReadOnlyCollection<string> FilesToIgnore
-        {
-            get
-            {
-                return this.filesToIgnore;
-            }
-        }
+        public IReadOnlyList<IgnoreConfig> IgnoreConfigs { get; private set; }
+
+        /// <summary>
+        /// The require config for this pattern.
+        /// </summary>
+        public IReadOnlyList<RequireConfig> RequireConfigs { get; private set; }
     }
 }
