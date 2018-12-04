@@ -8,13 +8,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filesing.Cli", "Filesing.Cl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SethCS", "SethCS", "{19F49E16-1B5A-40AB-866D-D330D88402DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSethCS.Standard", "SethCS\SethCS\LibSethCS.Standard.csproj", "{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSethCS.Standard", "SethCS\SethCS\LibSethCS.Standard.csproj", "{D3E5C94C-9C2D-43E2-B42E-E3528D765D02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filesing.Tests", "Filesing.Tests\Filesing.Tests.csproj", "{4816670D-EB75-4357-B912-B9FCC83D27C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{89558DE6-CB5F-4850-AD3D-32C15C8E993B}"
 	ProjectSection(SolutionItems) = preProject
 		Documentation\SampleFilesingConfig.xml = Documentation\SampleFilesingConfig.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34E963D0-C8BE-4CE2-9C0F-621B6B1FB8D0}"
+	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
 	EndProjectSection
 EndProject
 Global

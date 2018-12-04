@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Filesing</id>
+    <version>0.0.0</version> <!-- Set during build. -->
+    <authors>Seth Hendrick</authors>
+    <description>A text finder.</description>
+    <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.</summary>
+    <license type="expression">BSL</license>
+    <projectUrl>https://github.com/xforever1313/Filesing</projectUrl>
+    <!--<iconUrl></iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <repository type="git" url="https://github.com/xforever1313/Filesing"/>
+    <copyright>Copyright (c) Seth Hendrick</copyright>
+    <tags>Filesing xforever1313 search file directory directories regex pattern find locate</tags>
+  </metadata>
+  <files>
+  </files>
+</package>
