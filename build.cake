@@ -74,6 +74,8 @@ Task( "make_dist" )
 
         DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", settings );
         CopyFileToDirectory( "./LICENSE_1_0.txt", packageOutput );
+        CopyFileToDirectory( "./Filesing.Cli/filesing.bat", packageOutput );
+        CopyFileToDirectory( "./Filesing.Cli/filesing.sh", packageOutput );
     }
 )
 .IsDependentOn( "unit_test" )
