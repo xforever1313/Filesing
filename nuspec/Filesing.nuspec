@@ -6,7 +6,7 @@
     <authors>Seth Hendrick</authors>
     <description>A text finder.</description>
     <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.</summary>
-    <license type="expression">BSL</license>
+    <licenseUrl>https://github.com/xforever1313/Filesing/blob/master/LICENSE_1_0.txt</licenseUrl>
     <projectUrl>https://github.com/xforever1313/Filesing</projectUrl>
     <!--<iconUrl></iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

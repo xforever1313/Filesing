@@ -1,11 +1,13 @@
 string target = Argument( "target", "build" );
 
-const string version = "1.0.0";
+const string version = "1.0.0"; // This is the version of filesing.  Update before releasing.
 const string makeRelaseTarget = "make_release";
 
 bool isRelease = ( target == makeRelaseTarget );
 
 DotNetCoreMSBuildSettings msBuildSettings = new DotNetCoreMSBuildSettings();
+
+// Sets filesing's assembly version.
 msBuildSettings.WithProperty( "Version", version )
     .WithProperty( "AssemblyVersion", version )
     .SetMaxCpuCount( System.Environment.ProcessorCount )
@@ -24,6 +26,7 @@ else
     packageOutput = "./dist/Debug";
 }
 
+packageOutput = MakeAbsolute( new FilePath( packageOutput ) ).FullPath;
 msBuildSettings.SetConfiguration( configuration );
 
 Task( "build" )
@@ -80,7 +83,27 @@ Task( "pack_nuget" )
 .Does(
     () =>
     {
+        NuGetPackSettings settings = new NuGetPackSettings
+        {
+            Version = version,
+            BasePath = packageOutput,
+            OutputDirectory = packageOutput,
+            Symbols = false,
+            // This surpresses warnings such as '.dll' is not inside the 'lib' folder and blah blah blah.
+            NoPackageAnalysis = true,
+            // Cake's build.cake does this.  It takes all of the files in the dist folder
+            // and adds them to the nuget package.  It:
+            // 1. Grabs all of the files
+            // 2. Gets the full path of the files
+            // 3. Removes the full path of the file, so just the file name remains (plus the subdirectory in the dist folder)
+            // 4. Creates a NuSpecContent object, which the Files property requires.
+            Files = GetFiles( System.IO.Path.Combine( packageOutput, "*" ) )
+                        .Select( file => file.FullPath.Substring( packageOutput.Length + 1 ) )
+                        .Select( file => new NuSpecContent { Source = file, Target = file } )
+                        .ToArray()
+        };
 
+        NuGetPack( "./nuspec/Filesing.nuspec", settings );
     }
 )
 .IsDependentOn( "make_dist" )
