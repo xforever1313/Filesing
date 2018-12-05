@@ -19,6 +19,7 @@ matrix:
 # Build Config #
 #--------------#
 before_build:
+    - git submodule update --init ./SethCS
     - nuget install cake -ExcludeVersion
 
 build:
