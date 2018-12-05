@@ -22,8 +22,8 @@ before_build:
     - git submodule update --init ./SethCS
     - nuget install cake -ExcludeVersion
 
-build:
-    - ./Cake/Cake.exe --target=make_release
+build_script:
+    - ps: .\Cake\Cake.exe --target=make_release
    
 #-------------#
 # Test Config #
