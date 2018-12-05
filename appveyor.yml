@@ -23,7 +23,7 @@ before_build:
     - nuget install cake -ExcludeVersion
 
 build:
-    ./Cake/Cake.exe --target=make_release
+    - ./Cake/Cake.exe --target=make_release
    
 #-------------#
 # Test Config #
