@@ -18,27 +18,15 @@ matrix:
 #--------------#
 # Build Config #
 #--------------#
-
-platform: Any CPU
-
-configuration: Release
-
 before_build:
-    - git submodule update --init SethCS
-    - dotnet restore Filesing.sln
+    - nuget install cake -ExcludeVersion
 
 build:
-    parallel: true
-    project: Filesing.sln
-    publish_nuget: false
+    ./Cake/Cake.exe --target=make_release
    
 #-------------#
 # Test Config #
 #-------------#
-
-test:
-    assemblies:
-        - Filesing.Tests.dll
 
 notifications:
     - provider: Email
@@ -51,5 +39,5 @@ notifications:
 # Artifacts #
 #-----------#
 
-#artifacts:
-#    - path: '*.nupkg'
+artifacts:
+    - path: './dist/Release/*.nupkg'
