@@ -112,23 +112,9 @@ namespace Filesing.Cli
                 }
                 else
                 {
-                    FilesingConfig config = new FilesingConfig
-                    {
-                        NumberOfThreads = 2,
-                        SearchDirectoryLocation = searchDir
-                    };
-                    IgnoreConfig ignoreConfig = new IgnoreConfig();
-                    ignoreConfig.AddDirNameToIgnore( "bin" );
-                    ignoreConfig.AddDirNameToIgnore( "obj" );
-                    ignoreConfig.AddDirNameToIgnore( ".vs" );
-                    ignoreConfig.AddIgnoredFileExtension( new Regex( @"\.zip" ) );
-                    config.GlobalIgnoreConfigs.Add( ignoreConfig );
-
-                    PatternConfig patternConfig = new PatternConfig(
-                        new Regex( "class", RegexOptions.IgnoreCase | RegexOptions.Compiled )
-                    );
-                    config.PatternConfigs.Add( patternConfig );
-
+                    FilesingConfig config = XmlLoader.LoadConfigFromXml( inFile );
+                    config.NumberOfThreads = numThreads;
+                    config.SearchDirectoryLocation = searchDir;
                     log.Verbosity = verbosity;
 
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )

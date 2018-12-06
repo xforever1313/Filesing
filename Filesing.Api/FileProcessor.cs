@@ -57,64 +57,75 @@ namespace Filesing.Api
             }
 
             List<MatchResult> results = new List<MatchResult>();
-            if( patternsToUse.Count == 0 )
+            try
             {
-                this.Status( FilesingConstants.LightVerbosity, "Ignoring file '" + filePath + "'" );
-                return results;
-            }
-
-            this.Status( FilesingConstants.LightVerbosity, "Processing file: '" + filePath + "'" );
-
-            // Check filename first.
-            foreach( PatternConfig pattern in patternsToUse )
-            {
-                if( pattern.Pattern.IsMatch( filePath ) )
+                if( patternsToUse.Count == 0 )
                 {
-                    MatchResult result = new MatchResult
-                    {
-                        File = filePath,
-                        Line = string.Empty,
-                        LineNumber = 0,
-                        Pattern = pattern.Pattern.ToString()
-                    };
-
-                    results.Add( result );
-
-                    this.Status( FilesingConstants.HeavyVerbosity, result.ToString() );
+                    this.Status( FilesingConstants.LightVerbosity, "Ignoring file '" + filePath + "'" );
+                    return results;
                 }
-            }
 
-            using( StreamReader reader = new StreamReader( stream ) )
-            {
-                string line = null;
-                int lineNumber = 0;
-                do
+                this.Status( FilesingConstants.LightVerbosity, "Processing file: '" + filePath + "'" );
+
+                // Check filename first.
+                foreach( PatternConfig pattern in patternsToUse )
                 {
-                    ++lineNumber;
-
-                    line = reader.ReadLine();
-                    if( line != null )
+                    if( pattern.Pattern.IsMatch( filePath ) )
                     {
-                        foreach( PatternConfig pattern in patternsToUse )
+                        MatchResult result = new MatchResult
                         {
-                            if( pattern.Pattern.IsMatch( line ) )
+                            File = filePath,
+                            Line = string.Empty,
+                            LineNumber = 0,
+                            Pattern = pattern.Pattern.ToString()
+                        };
+
+                        results.Add( result );
+
+                        this.Status( FilesingConstants.HeavyVerbosity, result.ToString() );
+                    }
+                }
+
+                using( StreamReader reader = new StreamReader( stream ) )
+                {
+                    string line = null;
+                    int lineNumber = 0;
+                    do
+                    {
+                        ++lineNumber;
+
+                        line = reader.ReadLine();
+                        if( line != null )
+                        {
+                            foreach( PatternConfig pattern in patternsToUse )
                             {
-                                MatchResult result = new MatchResult
+                                if( pattern.Pattern.IsMatch( line ) )
                                 {
-                                    File = filePath,
-                                    Line = line,
-                                    LineNumber = lineNumber,
-                                    Pattern = pattern.Pattern.ToString()
-                                };
+                                    MatchResult result = new MatchResult
+                                    {
+                                        File = filePath,
+                                        Line = line,
+                                        LineNumber = lineNumber,
+                                        Pattern = pattern.Pattern.ToString()
+                                    };
 
-                                results.Add( result );
+                                    results.Add( result );
 
-                                this.Status( FilesingConstants.HeavyVerbosity, result.ToString() );
+                                    this.Status( FilesingConstants.HeavyVerbosity, result.ToString() );
+                                }
                             }
                         }
                     }
+                    while( line != null );
+
+                    return results;
                 }
-                while( line != null );
+            }
+            catch( Exception e )
+            {
+                this.log.WarningWriteLine(
+                    "ERROR when parsing '" + filePath + "': " + e.Message
+                );
 
                 return results;
             }
