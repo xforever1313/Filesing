@@ -15,7 +15,7 @@ using SethCS.IO;
 
 namespace Filesing.Cli
 {
-    class Program
+    static class Program
     {
         static int Main( string[] args )
         {

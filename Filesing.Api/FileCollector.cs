@@ -18,7 +18,7 @@ namespace Filesing.Api
     {
         // ---------------- Fields ----------------
 
-        private GenericLogger log;
+        private readonly GenericLogger log;
 
         // ---------------- Constructor ----------------
 

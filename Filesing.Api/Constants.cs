@@ -9,10 +9,10 @@ namespace Filesing.Api
 {
     public static class FilesingConstants
     {
-        public const int NoVerbosity = 0;
+        public static readonly int NoVerbosity = 0;
 
-        public const int LightVerbosity = 1;
+        public static readonly int LightVerbosity = 1;
 
-        public const int HeavyVerbosity = 2;
+        public static readonly int HeavyVerbosity = 2;
     }
 }
