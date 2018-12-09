@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Filesing.Api;
 using Mono.Options;
 using SethCS.Basic;
@@ -39,6 +40,7 @@ namespace Filesing.Cli
                 int numThreads = 1;
                 int verbosity = 0;
                 int foundExitCode = 0;
+                Regex regex = null;
 
                 OptionSet options = new OptionSet
                 {
@@ -59,7 +61,7 @@ namespace Filesing.Cli
                     },
                     {
                         "f|configfile=",
-                        "The input file to determine which patterns to search for.  Required.",
+                        "The input file to determine which patterns to search for.  Required if regex is not specified.",
                         f => inFile = f
                     },
                     {
@@ -105,6 +107,13 @@ namespace Filesing.Cli
                                 );
                             }
                         }
+                    },
+                    {
+                        "r|regex=",
+                        "Searches the diretory for this regex.  If a config file is specified as well, the global " +
+                        "ignore/require settings are applied when searching for this regex." + 
+                        " Optional (uses regexes in config file if not specified).",
+                        r => { regex = new Regex( r, RegexOptions.Compiled ); }
                     }
                 };
 
@@ -126,9 +135,49 @@ namespace Filesing.Cli
                 }
                 else
                 {
-                    FilesingConfig config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
-                    config.NumberOfThreads = numThreads;
+                    FilesingConfig config;
                     log.Verbosity = verbosity;
+
+                    if ( regex == null )
+                    {
+                        log.WriteLine(
+                            FilesingConstants.LightVerbosity,
+                            "Using regexes from config file."
+                        );
+
+                        config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
+                    }
+                    else
+                    {
+                        log.WriteLine(
+                            FilesingConstants.LightVerbosity,
+                            "Regex specified on command line.  Using regex '" + regex.ToString() + "'"
+                        );
+
+                        if ( string.IsNullOrWhiteSpace( inFile ) )
+                        {
+                            log.WriteLine(
+                                FilesingConstants.LightVerbosity,
+                                "No config file specified, not ignoring any files."
+                            );
+                            config = new FilesingConfig();
+                        }
+                        else
+                        {
+                            log.WriteLine(
+                                FilesingConstants.LightVerbosity,
+                                "Config file specified.  Using file's global ignores and requires.  Ignoring file's patterns since one specified."
+                            );
+                            config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
+                        }
+
+                        config.PatternConfigs.Clear();
+                        PatternConfig patternConfig = new PatternConfig( regex );
+                        config.PatternConfigs.Add( patternConfig );
+                    }
+
+                    config.SearchDirectoryLocation = searchDir;
+                    config.NumberOfThreads = numThreads;
 
                     IReadOnlyList<MatchResult> results = null;
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )
