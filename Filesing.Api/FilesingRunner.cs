@@ -135,6 +135,11 @@ namespace Filesing.Api
 
         protected void Dispose( bool fromDispose )
         {
+            if( this.IsRunning == false )
+            {
+                return;
+            }
+
             this.IsRunning = false;
 
             // If we are from Dispose() and not from Finalize,

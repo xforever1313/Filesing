@@ -61,11 +61,11 @@ namespace Filesing.Api
             {
                 if( patternsToUse.Count == 0 )
                 {
-                    this.Status( FilesingConstants.LightVerbosity, "Ignoring file '" + filePath + "'" );
+                    this.Status( FilesingConstants.MediumVervosity, "Ignoring file '" + filePath + "'" );
                     return results;
                 }
 
-                this.Status( FilesingConstants.LightVerbosity, "Processing file: '" + filePath + "'" );
+                this.Status( FilesingConstants.MediumVervosity, "Processing file: '" + filePath + "'" );
 
                 // Check filename first.
                 foreach( PatternConfig pattern in patternsToUse )

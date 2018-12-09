@@ -84,7 +84,7 @@ namespace Filesing.Cli
                     },
                     {
                         "v|verbosity=",
-                        "How verbose the output should be.  Levels are 0, 1, and 2.  0 (the default) or less prints the least, 2 or more prints the most.",
+                        "How verbose the output should be.  Levels are 0, 1, 2, and 3.  0 (the default) or less prints the least, 3 or more prints the most.",
                         v =>
                         {
                             if ( int.TryParse( v, out verbosity ) == false)
@@ -111,7 +111,7 @@ namespace Filesing.Cli
                     {
                         "r|regex=",
                         "Searches the diretory for this regex.  If a config file is specified as well, the global " +
-                        "ignore/require settings are applied when searching for this regex." + 
+                        "ignore/require settings in the config file are applied when searching for this regex." + 
                         " Optional (uses regexes in config file if not specified).",
                         r => { regex = new Regex( r, RegexOptions.Compiled ); }
                     }
@@ -135,48 +135,9 @@ namespace Filesing.Cli
                 }
                 else
                 {
-                    FilesingConfig config;
                     log.Verbosity = verbosity;
 
-                    if ( regex == null )
-                    {
-                        log.WriteLine(
-                            FilesingConstants.LightVerbosity,
-                            "Using regexes from config file."
-                        );
-
-                        config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
-                    }
-                    else
-                    {
-                        log.WriteLine(
-                            FilesingConstants.LightVerbosity,
-                            "Regex specified on command line.  Using regex '" + regex.ToString() + "'"
-                        );
-
-                        if ( string.IsNullOrWhiteSpace( inFile ) )
-                        {
-                            log.WriteLine(
-                                FilesingConstants.LightVerbosity,
-                                "No config file specified, not ignoring any files."
-                            );
-                            config = new FilesingConfig();
-                        }
-                        else
-                        {
-                            log.WriteLine(
-                                FilesingConstants.LightVerbosity,
-                                "Config file specified.  Using file's global ignores and requires.  Ignoring file's patterns since one specified."
-                            );
-                            config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
-                        }
-
-                        config.PatternConfigs.Clear();
-                        PatternConfig patternConfig = new PatternConfig( regex );
-                        config.PatternConfigs.Add( patternConfig );
-                    }
-
-                    config.SearchDirectoryLocation = searchDir;
+                    FilesingConfig config = GenerateConfig( regex, searchDir, log, inFile );
                     config.NumberOfThreads = numThreads;
 
                     IReadOnlyList<MatchResult> results = null;
@@ -213,6 +174,53 @@ namespace Filesing.Cli
             }
 
             return 0;
+        }
+
+        private static FilesingConfig GenerateConfig( Regex regex, string searchDir, GenericLogger log, string inFile )
+        {
+            FilesingConfig config;
+
+            if( regex == null )
+            {
+                log.WriteLine(
+                    FilesingConstants.LightVerbosity,
+                    "- Using regexes from config file."
+                );
+
+                config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
+            }
+            else
+            {
+                log.WriteLine(
+                    FilesingConstants.LightVerbosity,
+                    "- Regex specified on command line.  Using regex '" + regex.ToString() + "'"
+                );
+
+                if( string.IsNullOrWhiteSpace( inFile ) )
+                {
+                    log.WriteLine(
+                        FilesingConstants.LightVerbosity,
+                        "- No config file specified, not ignoring any files or directories."
+                    );
+                    config = new FilesingConfig();
+                }
+                else
+                {
+                    log.WriteLine(
+                        FilesingConstants.LightVerbosity,
+                        "- Config file specified.  Using config file's global ignores and requires.  Ignoring file's patterns since 'regex' was specified on CLI."
+                    );
+                    config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
+                }
+
+                config.PatternConfigs.Clear();
+                PatternConfig patternConfig = new PatternConfig( regex );
+                config.PatternConfigs.Add( patternConfig );
+            }
+
+            config.SearchDirectoryLocation = searchDir;
+
+            return config;
         }
 
         private static void Log_OnWarningWriteLine( string obj )

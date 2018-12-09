@@ -52,6 +52,11 @@ namespace Filesing.Api
 
         public static FilesingConfig LoadConfigFromXml( string xmlFilePath, string searchDir )
         {
+            if( File.Exists( xmlFilePath ) == false )
+            {
+                throw new FileNotFoundException( "Can not find Filesing config file '" + xmlFilePath + "'" );
+            }
+
             FilesingConfig config = new FilesingConfig
             {
                 SearchDirectoryLocation = searchDir

@@ -13,6 +13,8 @@ namespace Filesing.Api
 
         public static readonly int LightVerbosity = 1;
 
-        public static readonly int HeavyVerbosity = 2;
+        public static readonly int MediumVervosity = 2;
+
+        public static readonly int HeavyVerbosity = 3;
     }
 }
