@@ -131,7 +131,7 @@ namespace Filesing.Api
             }
         }
 
-        public bool ShouldProcessFile( string filePath, FilesingConfig config, PatternConfig currentPattern )
+        public static bool ShouldProcessFile( string filePath, FilesingConfig config, PatternConfig currentPattern )
         {
             bool globalIgnore = false;
             for( int i = 0; ( i < config.GlobalIgnoreConfigs.Count ) && ( globalIgnore == false ); ++i )
