@@ -45,7 +45,7 @@ namespace Filesing.Api
 
         /// <summary>
         /// Ignore configs that affects ALL patterns.
-        /// </remarks>
+        /// </summary>
         public IList<IgnoreConfig> GlobalIgnoreConfigs { get; private set; }
 
         /// <summary>
