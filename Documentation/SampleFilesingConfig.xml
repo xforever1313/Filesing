@@ -50,7 +50,7 @@ Global vs Pattern ignores/requirements:
       globally, add the file to the pattern's 'requirements' tag to ensure it DOES get processed.
 
 -->
-<filesingConfig>
+<filesingConfig xmlns="https://files.shendrick.net/projects/filesing/schemas/config/2018/FilesingConfigSchema.xsd">
     <globalSettings>
         <ignores>
             <ignoreFile>./somewhere/.gitmodules</ignoreFile>

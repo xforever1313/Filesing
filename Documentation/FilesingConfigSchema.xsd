@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="FilesingConfigSchema"
+    targetNamespace="https://files.shendrick.net/projects/filesing/schemas/config/2018/FilesingConfigSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="https://files.shendrick.net/projects/filesing/schemas/config/2018/FilesingConfigSchema.xsd"
+    xmlns:mstns="https://files.shendrick.net/projects/filesing/schemas/config/2018/FilesingConfigSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+    <xs:complexType name="PathWithIgnoreCaseAttr">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="ignoreCase" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="PatternIgnoreCaseAttr">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="ignoreCase" type="xs:boolean" default="true"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="IgnoreConfig">
+        <xs:sequence>
+            <xs:element name="ignoreFile" type ="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="ignoreDir" type ="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="ignoreFileWithRegex" type ="PathWithIgnoreCaseAttr" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="ignoreDirWithRegex" type ="PathWithIgnoreCaseAttr" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="ignoreFileWithExtension" type ="PathWithIgnoreCaseAttr" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RequireConfig">
+        <xs:sequence>
+            <xs:element name="requireFile" type ="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="requireDir" type ="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="GlobalSettings">
+        <xs:sequence>
+            <xs:element name="ignores" type="IgnoreConfig" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="requirements" type="RequireConfig" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PatternConfig">
+        <xs:sequence>
+            <xs:element name="regex" type="PatternIgnoreCaseAttr" minOccurs="1" maxOccurs="1" />
+            <xs:element name="ignores" type="IgnoreConfig" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="requirements" type="RequireConfig" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PatternConfigs">
+        <xs:sequence>
+            <xs:element name="regex" type="PatternIgnoreCaseAttr" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="pattern" type="PatternConfig" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FilesingConfig">
+        <xs:sequence>
+            <xs:element name="globalSettings" type="GlobalSettings" minOccurs="0" maxOccurs="1" />
+            <xs:element name="patterns" type="PatternConfigs" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="filesingConfig" type="FilesingConfig" />
+</xs:schema>
