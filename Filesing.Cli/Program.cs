@@ -6,8 +6,8 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Filesing.Api;
 using Mono.Options;
 using SethCS.Basic;
@@ -38,6 +38,7 @@ namespace Filesing.Cli
                 string searchDir = string.Empty;
                 int numThreads = 1;
                 int verbosity = 0;
+                int foundExitCode = 0;
 
                 OptionSet options = new OptionSet
                 {
@@ -84,10 +85,23 @@ namespace Filesing.Cli
                         "How verbose the output should be.  Levels are 0, 1, and 2.  0 (the default) or less prints the least, 2 or more prints the most.",
                         v =>
                         {
-                            if ( int.TryParse(v, out verbosity ) == false)
+                            if ( int.TryParse( v, out verbosity ) == false)
                             {
                                 throw new ArgumentException(
                                     "Verbosity must be an integer, got: '" + v + "'"
+                                );
+                            }
+                        }
+                    },
+                    {
+                        "e|exit_code_on_find=",
+                        "If ANY matches are found, what the exit code should be.  Defaulted to 0.",
+                        e =>
+                        {
+                            if ( int.TryParse( e, out foundExitCode ) == false )
+                            {
+                                throw new ArgumentException(
+                                    "exit_code_on_find must be an integer, got: '" + e + "'"
                                 );
                             }
                         }
@@ -116,10 +130,25 @@ namespace Filesing.Cli
                     config.NumberOfThreads = numThreads;
                     log.Verbosity = verbosity;
 
+                    IReadOnlyList<MatchResult> results = null;
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )
                     {
                         runner.Start();
-                        runner.Join();
+                        results = runner.Join();
+                    }
+
+                    if( results.Count == 0 )
+                    {
+                        log.WriteLine( "No Matches Found!" );
+                    }
+                    else
+                    {
+                        log.WriteLine( "Matches Found:" );
+                        foreach( MatchResult result in results )
+                        {
+                            log.WriteLine( result.ToString() );
+                        }
+                        return foundExitCode;
                     }
                 }
             }

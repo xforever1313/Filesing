@@ -158,6 +158,7 @@ namespace Filesing.Api
 
         private void ThreadEntry( string threadName )
         {
+            List<MatchResult> threadResults = new List<MatchResult>();
             try
             {
                 FileProcessor fileProcessor = new FileProcessor( this.config, this.log, threadName );
@@ -178,7 +179,8 @@ namespace Filesing.Api
                         this.filesToProcess.RemoveAt( 0 );
                     }
 
-                    fileProcessor.ProcessFile( file );
+                    IReadOnlyList<MatchResult> fileResults = fileProcessor.ProcessFile( file );
+                    threadResults.AddRange( fileResults );
                 }
             }
             catch( Exception err )
@@ -189,6 +191,11 @@ namespace Filesing.Api
             }
             finally
             {
+                lock( this.results )
+                {
+                    this.results.AddRange( threadResults );
+                }
+
                 this.log.WriteLine( FilesingConstants.LightVerbosity, threadName + "> Exiting." );
             }
         }
