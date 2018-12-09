@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 using SethCS.Extensions;
@@ -49,12 +50,15 @@ namespace Filesing.Api
 
         // ---------------- Functions ----------------
 
-        public static FilesingConfig LoadConfigFromXml( string filePath )
+        public static FilesingConfig LoadConfigFromXml( string xmlFilePath, string searchDir )
         {
-            FilesingConfig config = new FilesingConfig();
+            FilesingConfig config = new FilesingConfig
+            {
+                SearchDirectoryLocation = searchDir
+            };
 
             XmlDocument doc = new XmlDocument();
-            doc.Load( filePath );
+            doc.Load( xmlFilePath );
 
             XmlNode rootNode = doc.DocumentElement;
             if( rootNode.Name.EqualsIgnoreCase( rootNodeName ) == false )
@@ -79,22 +83,22 @@ namespace Filesing.Api
             return config;
         }
 
-        private static void ParseGlobalSettings( XmlNode globalSettingsNode, FilesingConfig config )
+        private static void ParseGlobalSettings( XmlNode globalSettingsNode, FilesingConfig filesingConfig )
         {
             foreach( XmlNode childNode in globalSettingsNode.ChildNodes )
             {
                 if( childNode.Name.EqualsIgnoreCase( ignoreListNode ) )
                 {
-                    config.GlobalIgnoreConfigs.Add( LoadIgnoreConfig( childNode ) );
+                    filesingConfig.GlobalIgnoreConfigs.Add( LoadIgnoreConfig( childNode, filesingConfig ) );
                 }
                 else if( childNode.Name.EqualsIgnoreCase( requirementsListNode ) )
                 {
-                    config.GlobalRequireConfigs.Add( LoadRequireConfig( childNode ) );
+                    filesingConfig.GlobalRequireConfigs.Add( LoadRequireConfig( childNode, filesingConfig ) );
                 }
             }
         }
 
-        private static void ParsePatterns( XmlNode patternListNode, FilesingConfig config )
+        private static void ParsePatterns( XmlNode patternListNode, FilesingConfig filesingConfig )
         {
             foreach( XmlNode childNode in patternListNode.ChildNodes )
             {
@@ -103,17 +107,17 @@ namespace Filesing.Api
                     // Patterns will always default to ignoring case.
                     Regex regex = CreateRegexFromXmlNode( childNode, true );
                     PatternConfig patternConfig = new PatternConfig( regex );
-                    config.PatternConfigs.Add( patternConfig );
+                    filesingConfig.PatternConfigs.Add( patternConfig );
                 }
                 else if( childNode.Name.EqualsIgnoreCase( patternNode ) )
                 {
-                    PatternConfig patternConfig = LoadPatternConfig( childNode );
-                    config.PatternConfigs.Add( patternConfig );
+                    PatternConfig patternConfig = LoadPatternConfig( childNode, filesingConfig );
+                    filesingConfig.PatternConfigs.Add( patternConfig );
                 }
             }
         }
 
-        private static PatternConfig LoadPatternConfig( XmlNode patternNode )
+        private static PatternConfig LoadPatternConfig( XmlNode patternNode, FilesingConfig filesingConfig )
         {
             Regex regex = null;
             List<IgnoreConfig> ignoreConfigs = new List<IgnoreConfig>();
@@ -127,12 +131,12 @@ namespace Filesing.Api
                 }
                 else if( childNode.Name.EqualsIgnoreCase( ignoreListNode ) )
                 {
-                    IgnoreConfig ignoreConfig = LoadIgnoreConfig( childNode );
+                    IgnoreConfig ignoreConfig = LoadIgnoreConfig( childNode, filesingConfig );
                     ignoreConfigs.Add( ignoreConfig );
                 }
                 else if( childNode.Name.EqualsIgnoreCase( requirementsListNode ) )
                 {
-                    RequireConfig requireConfig = LoadRequireConfig( childNode );
+                    RequireConfig requireConfig = LoadRequireConfig( childNode, filesingConfig );
                     requireConfigs.Add( requireConfig );
                 }
             }
@@ -140,41 +144,61 @@ namespace Filesing.Api
             return new PatternConfig( regex, ignoreConfigs, requireConfigs );
         }
 
-        private static IgnoreConfig LoadIgnoreConfig( XmlNode ignoreNode )
+        private static IgnoreConfig LoadIgnoreConfig( XmlNode ignoreNode, FilesingConfig filesingConfig )
         {
-            IgnoreConfig config = new IgnoreConfig();
+            IgnoreConfig ignoreConfig = new IgnoreConfig();
 
             foreach( XmlNode childNode in ignoreNode.ChildNodes )
             {
                 // Parse specific files that are ignored.
                 if( childNode.Name.EqualsIgnoreCase( ignoreFileNode ) )
                 {
-                    config.AddSpecificFileToIgnore( childNode.InnerText );
+                    ignoreConfig.AddSpecificFileToIgnore(
+                        Path.Combine( filesingConfig.SearchDirectoryLocation, childNode.InnerText )
+                    );
                 }
                 // Parse specific dirs that are ignored.
                 else if( childNode.Name.EqualsIgnoreCase( ignoreDirNode ) )
                 {
-                    config.AddSpecificDirToIgnore( childNode.InnerText );
+                    ignoreConfig.AddSpecificDirToIgnore(
+                        Path.Combine( filesingConfig.SearchDirectoryLocation, childNode.InnerText )
+                    );
                 }
                 // Parse files ignored with a regex pattern.
                 else if( childNode.Name.EqualsIgnoreCase( ignoreFileWithRegexNode ) )
                 {
                     // Files and directories shall always be defaulted to false.
                     Regex regex = CreateRegexFromXmlNode( childNode, false );
-                    config.AddFileRegexToIgnore( regex );
+                    ignoreConfig.AddFileRegexToIgnore( regex );
                 }
                 // Parse dirs ignored with a regex pattern.
                 else if( childNode.Name.EqualsIgnoreCase( ignoreDirWithRegexNode ) )
                 {
                     // Files and directories shall always be defaulted to false.
-                    config.AddDirNameToIgnore( childNode.Name, LookForIgnoreCaseAttribute( childNode, false ) );
+                    ignoreConfig.AddDirNameToIgnore( childNode.InnerText, LookForIgnoreCaseAttribute( childNode, false ) );
+                }
+                else if( childNode.Name.EqualsIgnoreCase( ignoreFileWithExtensionNode ) )
+                {
+                    string pattern = Regex.Escape( childNode.InnerText );
+
+                    // Files and directories shall always be defaulted to false.
+                    bool ignoreCase = LookForIgnoreCaseAttribute( childNode, false );
+
+                    RegexOptions options = RegexOptions.Compiled;
+                    if( ignoreCase )
+                    {
+                        options |= RegexOptions.IgnoreCase;
+                    }
+
+                    Regex regex = new Regex( pattern, options );
+                    ignoreConfig.AddIgnoredFileExtension( regex );
                 }
             }
 
-            return config;
+            return ignoreConfig;
         }
 
-        private static RequireConfig LoadRequireConfig( XmlNode requireNode )
+        private static RequireConfig LoadRequireConfig( XmlNode requireNode, FilesingConfig filesingConfig )
         {
             RequireConfig config = new RequireConfig();
 
@@ -183,12 +207,16 @@ namespace Filesing.Api
                 // Parse specific file to require
                 if( childNode.Name.EqualsIgnoreCase( requireFileNode ) )
                 {
-                    config.AddRequiredFile( childNode.InnerText );
+                    config.AddRequiredFile(
+                        Path.Combine( filesingConfig.SearchDirectoryLocation, childNode.InnerText )
+                    );
                 }
                 // Parse specific dir to require.
                 else if( childNode.Name.EqualsIgnoreCase( requireDirNode ) )
                 {
-                    config.AddRequiredDir( childNode.InnerText );
+                    config.AddRequiredDir(
+                        Path.Combine( filesingConfig.SearchDirectoryLocation, childNode.InnerText )
+                    );
                 }
             }
 
@@ -213,7 +241,7 @@ namespace Filesing.Api
                 options |= RegexOptions.IgnoreCase;
             }
 
-            Regex regex = new Regex( node.Value, options );
+            Regex regex = new Regex( node.InnerText, options );
 
             return regex;
         }

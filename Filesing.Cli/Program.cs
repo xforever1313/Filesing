@@ -112,9 +112,8 @@ namespace Filesing.Cli
                 }
                 else
                 {
-                    FilesingConfig config = XmlLoader.LoadConfigFromXml( inFile );
+                    FilesingConfig config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
                     config.NumberOfThreads = numThreads;
-                    config.SearchDirectoryLocation = searchDir;
                     log.Verbosity = verbosity;
 
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )

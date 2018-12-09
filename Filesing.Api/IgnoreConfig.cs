@@ -108,6 +108,19 @@ namespace Filesing.Api
         /// </param>
         public void AddDirNameToIgnore( string dirRegex, bool ignoreCase = false )
         {
+            this.ignoredDirsWithRegex.Add(
+                CreateIgnoreDirRegex( dirRegex, ignoreCase ) 
+            );
+        }
+
+        public void AddIgnoredFileExtension( Regex extensionRegex )
+        {
+            ArgumentChecker.IsNotNull( extensionRegex, nameof( extensionRegex ) );
+            this.ignoredFileExtensions.Add( extensionRegex );
+        }
+
+        public static Regex CreateIgnoreDirRegex( string dirRegex, bool ignoreCase )
+        {
             ArgumentChecker.IsNotNull( dirRegex, nameof( dirRegex ) );
 
             RegexOptions options = ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None;
@@ -119,20 +132,8 @@ namespace Filesing.Api
                 dirRegex
             );
 
-            this.ignoredDirsWithRegex.Add(
-                new Regex(
-                    regex,
-                    options
-                )
-            );
+            return new Regex( regex, options );
         }
-
-        public void AddIgnoredFileExtension( Regex extensionRegex )
-        {
-            ArgumentChecker.IsNotNull( extensionRegex, nameof( extensionRegex ) );
-            this.ignoredFileExtensions.Add( extensionRegex );
-        }
-
 
         /// <summary>
         /// Should we ignore the given path?

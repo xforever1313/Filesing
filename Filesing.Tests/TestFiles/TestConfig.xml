@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<filesingConfig>
+    <globalSettings>
+        <ignores>
+            <ignoreFile>./rootfile1.txt</ignoreFile>
+            <ignoreDir>./DIR2/mydir</ignoreDir>
+            <ignoreFileWithRegex ignoreCase="false">myFile.+</ignoreFileWithRegex>
+            <ignoreDirWithRegex ignoreCase="true">dir3</ignoreDirWithRegex>
+            <ignoreFileWithExtension ignoreCase="true">.html</ignoreFileWithExtension>
+            <ignoreFileWithExtension>.dll</ignoreFileWithExtension>
+        </ignores>
+        <requirements>
+            <requireFile>./Dir1/Hello.html</requireFile>
+            <requireDir>./Dir1</requireDir>
+        </requirements>
+    </globalSettings>
+    <patterns>
+        <regex>public</regex>
+        <pattern>
+            <regex ignoreCase="false">class</regex>
+            <ignores>
+                <ignoreFile>./RootFile2.txt</ignoreFile>
+                <ignoreDir>./Dir1</ignoreDir>
+                <ignoreFileWithRegex>Hello</ignoreFileWithRegex>
+                <ignoreDirWithRegex>Dir1</ignoreDirWithRegex>
+                <ignoreFileWithExtension ignoreCase="true">.txt</ignoreFileWithExtension>
+                <ignoreFileWithExtension ignoreCase="false">.EXE</ignoreFileWithExtension>
+            </ignores>
+            <requirements>
+                <requireFile>./DIR2/myfile.txt</requireFile>
+                <requireDir>./DIR2/mydir</requireDir>
+            </requirements>
+        </pattern>
+        <pattern>
+            <regex>hello</regex>
+        </pattern>
+    </patterns>
+</filesingConfig>
