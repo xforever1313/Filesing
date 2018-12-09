@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Filesing.Api;
@@ -62,12 +63,12 @@ namespace Filesing.Cli
                     {
                         "f|configfile=",
                         "The input file to determine which patterns to search for.  Required if regex is not specified.",
-                        f => inFile = f
+                        f => inFile = Path.GetFullPath( f )
                     },
                     {
                         "d|searchdir=",
                         "The directory to search for files that match the patterns.  Required.",
-                        d => searchDir = d
+                        d => searchDir = Path.GetFullPath( d )
                     },
                     {
                         "j|numthreads=",
@@ -140,6 +141,11 @@ namespace Filesing.Cli
                     FilesingConfig config = GenerateConfig( regex, searchDir, log, inFile );
                     config.NumberOfThreads = numThreads;
 
+                    log.WriteLine(
+                        FilesingConstants.LightVerbosity,
+                        "- Search directory specified: '" + searchDir + "'"
+                    );
+
                     IReadOnlyList<MatchResult> results = null;
                     using( FilesingRunner runner = new FilesingRunner( config, log ) )
                     {
@@ -184,7 +190,8 @@ namespace Filesing.Cli
             {
                 log.WriteLine(
                     FilesingConstants.LightVerbosity,
-                    "- Using regexes from config file."
+                    "- Using regexes from config file '{0}'",
+                    inFile
                 );
 
                 config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
@@ -208,7 +215,8 @@ namespace Filesing.Cli
                 {
                     log.WriteLine(
                         FilesingConstants.LightVerbosity,
-                        "- Config file specified.  Using config file's global ignores and requires.  Ignoring file's patterns since 'regex' was specified on CLI."
+                        "- Config file '{0}' specified.  Using config file's global ignores and requires.  Ignoring file's patterns since 'regex' was specified on CLI.",
+                        inFile
                     );
                     config = XmlLoader.LoadConfigFromXml( inFile, searchDir );
                 }
