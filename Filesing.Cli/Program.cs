@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -147,11 +148,22 @@ namespace Filesing.Cli
                     );
 
                     IReadOnlyList<MatchResult> results = null;
-                    using( FilesingRunner runner = new FilesingRunner( config, log ) )
+                    Stopwatch stopWatch = new Stopwatch();
+                    try
                     {
-                        runner.Start();
-                        results = runner.Join();
+                        stopWatch.Start();
+                        using( FilesingRunner runner = new FilesingRunner( config, log ) )
+                        {
+                            runner.Start();
+                            results = runner.Join();
+                        }
                     }
+                    finally
+                    {
+                        stopWatch.Stop();
+                    }
+
+                    log.WriteLine( FilesingConstants.LightVerbosity, "Operation took: " + stopWatch.Elapsed.TotalSeconds + "s" );
 
                     if( results.Count == 0 )
                     {
