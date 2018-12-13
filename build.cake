@@ -76,6 +76,7 @@ Task( "make_dist" )
         CopyFileToDirectory( "./LICENSE_1_0.txt", packageOutput );
         CopyFileToDirectory( "./Filesing.Cli/filesing.bat", packageOutput );
         CopyFileToDirectory( "./Filesing.Cli/filesing", packageOutput );
+        CopyFileToDirectory( "./Readme.md", packageOutput );
     }
 )
 .IsDependentOn( "unit_test" )
@@ -122,4 +123,3 @@ Task( makeRelaseTarget )
 .Description( "Creates a release." );
 
 RunTarget( target );
-
