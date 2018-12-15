@@ -112,14 +112,60 @@ Task( "pack_nuget" )
 .IsDependentOn( "make_dist" )
 .Description( "Creates Filesing's NuGet package." );
 
+Task( "pack_choco" )
+.Does(
+    () =>
+    {
+        string win10Output = System.IO.Path.Combine(
+            System.IO.Directory.GetCurrentDirectory(),
+            "dist/Win10-Release"
+        );
+
+        CleanDirectories( win10Output );
+
+        DotNetCoreBuildSettings win10Settings = new DotNetCoreBuildSettings
+        {
+            OutputDirectory = win10Output,
+            Configuration = "Release",
+            Runtime = "win10-x64",
+            MSBuildSettings = msBuildSettings
+        };
+
+        DotNetCoreBuild( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
+        CopyFileToDirectory( "./Readme.md", win10Output );
+        CopyFileToDirectory( "./LICENSE_1_0.txt", win10Output );
+
+        ChocolateyPackSettings settings = new ChocolateyPackSettings
+        {
+            Version = version,
+            OutputDirectory = win10Output,
+            // Cake's build.cake does this.  It takes all of the files in the dist folder
+            // and adds them to the nuget package.  It:
+            // 1. Grabs all of the files
+            // 2. Gets the full path of the files
+            // 3. Removes the full path of the file, so just the file name remains (plus the subdirectory in the dist folder)
+            // 4. Creates a ChocolateyNuSpecContent  object, which the Files property requires.
+            Files = GetFiles( System.IO.Path.Combine( win10Output, "*" ) )
+                        .Select( file => file.FullPath.Substring( win10Output.Length + 1 ) )
+                        .Select( file => new ChocolateyNuSpecContent  { Source = System.IO.Path.Combine( win10Output, file ) } )
+                        .ToArray()
+        };
+
+        ChocolateyPack( "./nuspec/Filesing.Portable.nuspec", settings );
+    }
+)
+.IsDependentOn( "unit_test" )
+.WithCriteria( Environment.OSVersion.Platform == PlatformID.Win32NT )
+.Description( "Create's Filesing's Chocolatey package.  Windows only." );
+
 Task( makeRelaseTarget )
 .Does(
     () =>
     {
-
     }
 )
 .IsDependentOn( "pack_nuget" )
+.IsDependentOn( "pack_choco" )
 .Description( "Creates a release." );
 
 RunTarget( target );

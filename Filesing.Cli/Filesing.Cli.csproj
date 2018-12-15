@@ -5,6 +5,10 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(RuntimeIdentifier)'=='Release|Win10-x64'">
+    <AssemblyName>Filesing</AssemblyName>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="mono.options" Version="5.3.0.1" />
   </ItemGroup>

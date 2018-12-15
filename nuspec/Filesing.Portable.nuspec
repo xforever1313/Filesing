@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+    <id>filesing.portable</id>
+    <title>Filesing.Portable</title>
+    <version>0.0.0</version> <!-- Set during build. -->
+    <authors>Seth Hendrick</authors>
+    <description>A text finder.</description>
+    <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.  This packages requires the dotnet runtime installed.</summary>
+    <licenseUrl>https://github.com/xforever1313/Filesing/blob/master/LICENSE_1_0.txt</licenseUrl>
+    <projectUrl>https://github.com/xforever1313/Filesing</projectUrl>
+    <bugTrackerUrl>https://github.com/xforever1313/Filesing/issues</bugTrackerUrl>
+    <!--<iconUrl></iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright (c) Seth Hendrick</copyright>
+    <tags>Filesing xforever1313 search file directory directories regex pattern find locate portable</tags>
+  </metadata>
+  <files>
+  </files>
+</package>
