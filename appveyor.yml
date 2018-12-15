@@ -42,3 +42,4 @@ notifications:
 
 artifacts:
     - path: './dist/Release/*.nupkg'
+    - path: './dist/Win10-Release/*.nupkg'

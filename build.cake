@@ -134,6 +134,7 @@ Task( "pack_choco" )
         DotNetCoreBuild( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
         CopyFileToDirectory( "./Readme.md", win10Output );
         CopyFileToDirectory( "./LICENSE_1_0.txt", win10Output );
+        CopyFileToDirectory( "./nuspec/VERIFICATION.txt", win10Output );
 
         ChocolateyPackSettings settings = new ChocolateyPackSettings
         {

@@ -1,0 +1,8 @@
+VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+This package is published by the author of Filesing, Seth Hendrick.
+The binaries are the same binaries that are published in the NuGet package
+(https://www.nuget.org/packages/Filesing/), plus some additional dlls
+and the exe to make it work on Windows.
