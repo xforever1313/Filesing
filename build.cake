@@ -123,15 +123,17 @@ Task( "pack_choco" )
 
         CleanDirectories( win10Output );
 
-        DotNetCoreBuildSettings win10Settings = new DotNetCoreBuildSettings
+        DotNetCorePublishSettings win10Settings = new DotNetCorePublishSettings
         {
             OutputDirectory = win10Output,
             Configuration = "Release",
             Runtime = "win10-x64",
-            MSBuildSettings = msBuildSettings
+            MSBuildSettings = msBuildSettings,
+            NoBuild = false,
+            NoRestore = false
         };
 
-        DotNetCoreBuild( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
+        DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
         CopyFileToDirectory( "./Readme.md", win10Output );
         CopyFileToDirectory( "./LICENSE_1_0.txt", win10Output );
         CopyFileToDirectory( "./nuspec/VERIFICATION.txt", win10Output );
