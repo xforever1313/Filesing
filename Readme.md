@@ -3,7 +3,7 @@ Filesing
 
 Filesing is a tool that can take in a configuration file and search a directory's contents for files that match regex(s) specified.  The configuration file can also specify which directories and/or files to ignore while searching.
 
-Filesing's name is derived from a "[dowsing](https://en.wikipedia.org/wiki/Dowsing)" device... but instead of finding water, it searchs files for regexes.
+Filesing's name is derived from a "[dowsing](https://en.wikipedia.org/wiki/Dowsing)" device... but instead of finding water, it searchs files for text that matches a list of regexes.
 
 Build Status
 ------
@@ -11,13 +11,16 @@ Build Status
 
 Packages
 ------
-[![NuGet](https://img.shields.io/nuget/v/Filesing.svg)](https://www.nuget.org/packages/Filesing/)
+[![NuGet](https://img.shields.io/nuget/v/Filesing.svg)](https://www.nuget.org/packages/Filesing/) [![Chocolatey](https://img.shields.io/chocolatey/v/filesing.portable.svg)](https://chocolatey.org/packages/filesing.portable/)
 
 Installing
 ------
-You can install Filesing from [NuGet](https://www.nuget.org/packages/Filesing/) by running on a command line ```nuget install filesing -ExcludeVersion```.  This will install filesing in the current directory in a folder named "Filesing".  Inside of Filesing will contain all of the dlls and ```filesing.bat``` and ```filesing```.  On Windows, run ```filesing.bat``` to launch filesing.  On Unix systems, running ```filesing``` will launch filesing.
+You can install Filesing from [Chocolatey](https://chocolatey.org/packages/filesing.portable) via ```choco install filesing.portable```.  This puts filesing.exe on the path,
+so you can call it from the command line.
 
-Note, you must have the [dotnet core runtime](https://dotnet.microsoft.com/download) installed on the PC, and the dotnet executable must be on the PATH environmental variable.
+You can also choose to install Filesing from [NuGet](https://www.nuget.org/packages/Filesing/) by running on a command line ```nuget install filesing -ExcludeVersion```.  This will install filesing in the current directory in a folder named "Filesing".  Inside of Filesing will contain all of the dlls and ```filesing.bat``` and ```filesing```.  On Windows, run ```filesing.bat``` to launch filesing.  On Unix systems, running ```filesing``` will launch filesing.
+
+The difference between the Chocolatey and the NuGet package is Chocolatey includes everything needed from the Dotnet core runtime, NuGet does not.  Therefore, with the NuGet package, you must have the [dotnet core runtime](https://dotnet.microsoft.com/download) installed on the PC, and the dotnet executable must be on the PATH environmental variable.  You do not need this installed with the Chocolatey package, since its included with it.  The Chocolatey package is also Windows only, the NuGet package is not.
 
 Usage
 ------
