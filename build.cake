@@ -133,6 +133,12 @@ Task( "pack_choco" )
             NoRestore = false
         };
 
+        // Yes, this will override the global msbuild settings since they
+        // are the same reference, but chocolatey is the last thing to get
+        // built (as everything else is built before unit_test, which is what
+        // this task depends on).  So, changing this property *shouldn't* matter.
+        win10Settings.MSBuildSettings.WithProperty( "TrimUnusedDependencies", "true" );
+
         DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
         CopyFileToDirectory( "./Readme.md", win10Output );
         CopyFileToDirectory( "./LICENSE_1_0.txt", win10Output );
