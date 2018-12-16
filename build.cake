@@ -73,7 +73,7 @@ Task( "make_dist" )
         };
 
         DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", settings );
-        CopyFileToDirectory( "./LICENSE_1_0.txt", packageOutput );
+        CopyFile( "./LICENSE_1_0.txt", System.IO.Path.Combine( packageOutput, "License.txt" ) );
         CopyFileToDirectory( "./Filesing.Cli/filesing.bat", packageOutput );
         CopyFileToDirectory( "./Filesing.Cli/filesing", packageOutput );
         CopyFileToDirectory( "./Readme.md", packageOutput );
@@ -123,7 +123,7 @@ Task( "pack_choco" )
 
         CleanDirectories( winOutput );
 
-        DotNetCorePublishSettings win10Settings = new DotNetCorePublishSettings
+        DotNetCorePublishSettings winSettings = new DotNetCorePublishSettings
         {
             OutputDirectory = winOutput,
             Configuration = "Release",
@@ -137,11 +137,11 @@ Task( "pack_choco" )
         // are the same reference, but chocolatey is the last thing to get
         // built (as everything else is built before unit_test, which is what
         // this task depends on).  So, changing this property *shouldn't* matter.
-        win10Settings.MSBuildSettings.WithProperty( "TrimUnusedDependencies", "true" );
+        winSettings.MSBuildSettings.WithProperty( "TrimUnusedDependencies", "true" );
 
-        DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
+        DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", winSettings );
         CopyFileToDirectory( "./Readme.md", winOutput );
-        CopyFileToDirectory( "./LICENSE_1_0.txt", winOutput );
+        CopyFile( "./LICENSE_1_0.txt", System.IO.Path.Combine( winOutput, "License.txt" ) );
         CopyFileToDirectory( "./nuspec/VERIFICATION.txt", winOutput );
 
         // Sanity check, make sure our exe is NOT Filesing.Cli.exe, but simply Filesing.exe.

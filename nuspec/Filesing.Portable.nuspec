@@ -6,14 +6,15 @@
     <title>Filesing.Portable</title>
     <version>0.0.0</version> <!-- Set during build. -->
     <authors>Seth Hendrick</authors>
-    <description>A text finder.</description>
-    <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.  This package is the 'portable' application, that includes what is needed from the dotnet core runtime.  If you have the dotnet core runtime already installed, you can consider using our NuGet package instead.</summary>
+    <summary>A command-line tool to search the contents of files.</summary>
+    <description>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.  This package is the 'portable' application, that includes what is needed from the dotnet core runtime.  If you have the dotnet core runtime already installed, you can consider using our NuGet package instead.</description>
     <licenseUrl>https://github.com/xforever1313/Filesing/blob/master/LICENSE_1_0.txt</licenseUrl>
     <projectUrl>https://github.com/xforever1313/Filesing</projectUrl>
     <bugTrackerUrl>https://github.com/xforever1313/Filesing/issues</bugTrackerUrl>
     <!--<iconUrl></iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright (c) Seth Hendrick</copyright>
+    <releaseNotes>Release Notes can be found here: https://github.com/xforever1313/Filesing/releases</releaseNotes>
     <tags>Filesing xforever1313 search file directory directories regex pattern find locate portable</tags>
   </metadata>
   <files>
