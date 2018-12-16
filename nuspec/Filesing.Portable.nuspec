@@ -7,7 +7,7 @@
     <version>0.0.0</version> <!-- Set during build. -->
     <authors>Seth Hendrick</authors>
     <description>A text finder.</description>
-    <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.  This packages requires the dotnet runtime installed.</summary>
+    <summary>Filesing is a way to search a directory's files for patterns, and have it report what files and filenames match the pattern.  This package is the 'portable' application, that includes what is needed from the dotnet core runtime.  If you have the dotnet core runtime already installed, you can consider using our NuGet package instead.</summary>
     <licenseUrl>https://github.com/xforever1313/Filesing/blob/master/LICENSE_1_0.txt</licenseUrl>
     <projectUrl>https://github.com/xforever1313/Filesing</projectUrl>
     <bugTrackerUrl>https://github.com/xforever1313/Filesing/issues</bugTrackerUrl>
