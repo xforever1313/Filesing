@@ -116,18 +116,18 @@ Task( "pack_choco" )
 .Does(
     () =>
     {
-        string win10Output = System.IO.Path.Combine(
+        string winOutput = System.IO.Path.Combine(
             System.IO.Directory.GetCurrentDirectory(),
-            "dist/Win10-Release"
+            "dist/Win-Release"
         );
 
-        CleanDirectories( win10Output );
+        CleanDirectories( winOutput );
 
         DotNetCorePublishSettings win10Settings = new DotNetCorePublishSettings
         {
-            OutputDirectory = win10Output,
+            OutputDirectory = winOutput,
             Configuration = "Release",
-            Runtime = "win10-x64",
+            Runtime = "win-x64",
             MSBuildSettings = msBuildSettings,
             NoBuild = false,
             NoRestore = false
@@ -140,23 +140,31 @@ Task( "pack_choco" )
         win10Settings.MSBuildSettings.WithProperty( "TrimUnusedDependencies", "true" );
 
         DotNetCorePublish( "./Filesing.Cli/Filesing.Cli.csproj", win10Settings );
-        CopyFileToDirectory( "./Readme.md", win10Output );
-        CopyFileToDirectory( "./LICENSE_1_0.txt", win10Output );
-        CopyFileToDirectory( "./nuspec/VERIFICATION.txt", win10Output );
+        CopyFileToDirectory( "./Readme.md", winOutput );
+        CopyFileToDirectory( "./LICENSE_1_0.txt", winOutput );
+        CopyFileToDirectory( "./nuspec/VERIFICATION.txt", winOutput );
+
+        // Sanity check, make sure our exe is NOT Filesing.Cli.exe, but simply Filesing.exe.
+        if ( FileExists( System.IO.Path.Combine( winOutput, "Filesing.exe" ) ) == false )
+        {
+            throw new FileNotFoundException(
+                "Filesing.exe was not found in chocolatey's dist folder.  Is it still named Filesing.Cli.exe?  Check the cakefiles and the CLI .csproj."
+            );
+        }
 
         ChocolateyPackSettings settings = new ChocolateyPackSettings
         {
             Version = version,
-            OutputDirectory = win10Output,
+            OutputDirectory = winOutput,
             // Cake's build.cake does this.  It takes all of the files in the dist folder
             // and adds them to the nuget package.  It:
             // 1. Grabs all of the files
             // 2. Gets the full path of the files
             // 3. Removes the full path of the file, so just the file name remains (plus the subdirectory in the dist folder)
             // 4. Creates a ChocolateyNuSpecContent  object, which the Files property requires.
-            Files = GetFiles( System.IO.Path.Combine( win10Output, "*" ) )
-                        .Select( file => file.FullPath.Substring( win10Output.Length + 1 ) )
-                        .Select( file => new ChocolateyNuSpecContent  { Source = System.IO.Path.Combine( win10Output, file ) } )
+            Files = GetFiles( System.IO.Path.Combine( winOutput, "*" ) )
+                        .Select( file => file.FullPath.Substring( winOutput.Length + 1 ) )
+                        .Select( file => new ChocolateyNuSpecContent  { Source = System.IO.Path.Combine( winOutput, file ) } )
                         .ToArray()
         };
 
